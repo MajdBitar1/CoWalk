@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: e27045dc7d72f31459e67a0006ebb26e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - LocalEntityAvatarPrefab: {fileID: 5214761011609970975, guid: fa214236a5adf404ba6c773b380dab9c, type: 3}
+  - RemoteEntityAvatarPrefab: {fileID: 7706462160380266711, guid: f70b3c598a9540043b0aea13db37cd51, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
