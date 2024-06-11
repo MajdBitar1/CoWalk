@@ -26,6 +26,7 @@ public class GroupManager : MonoBehaviour
     // private UnityEngine.Rendering.Universal.ChromaticAberration m_ChromaticAberration;
     // private UnityEngine.Rendering.Universal.ColorAdjustments m_ColorAdjustments;
     // private UnityEngine.Rendering.Universal.ColorCurves m_ColorCurves;
+    [SerializeField] GameObject AuraObj;
 
     [Header("Constants To Tune")]
 
@@ -146,9 +147,9 @@ public class GroupManager : MonoBehaviour
     private void SeparationDistanceThresholding(float distance)
     {
         float value = math.max( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
-        float grayscalevalue = math.max(0.5f, (distance - SafeSeparationZone) / MaxSeparationZone);
-        if (distance > 0)
+        if (value > 0)
         {
+
             // AnimationCurve curve = new AnimationCurve();
             // curve = AnimationCurve.Linear(0, 0, 1, 1);
             // TextureCurve mycurve = new TextureCurve(curve, 0f , true , new Vector2(1,1));
@@ -156,15 +157,11 @@ public class GroupManager : MonoBehaviour
             // m_ColorCurves.satVsSat.Override(mycurve);
 
             // ACESS POST PROCESSING AND APPLY CHROMATIC ABERRATION
-            
+            // AuraObj.SetActive(true);
         }
-
-        if (distance <= VirtualTouchDistance)
+        else
         {
-            //Haptic Feedback
-            //bell shaped function, peaks at 0 for a value of 1 and then is reduced quickly to become ~0.2 at +- 2
-            // can replace 1 / ( 1  + x^2 ) with sech(x) for faster decay, exp(-x^2) for extremely faster decay
-            //float hapticfeedback = 1 / (1 + diff * diff); 
+            AuraObj.SetActive(false);
         }
     }
 

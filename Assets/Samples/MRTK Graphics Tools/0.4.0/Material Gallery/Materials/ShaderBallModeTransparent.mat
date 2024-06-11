@@ -2,15 +2,21 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShaderBallModeTransparent
   m_Shader: {fileID: 4800000, guid: c331f6c43a2ef0945864cb668f2653c9, type: 3}
-  m_ShaderKeywords: _ALPHABLEND_TRANS_ON _BORDER_LIGHT_USES_HOVER_COLOR _DIRECTIONAL_LIGHT
-    _SPECULAR_HIGHLIGHTS _USE_WORLD_SCALE
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ALPHABLEND_TRANS_ON
+  - _BORDER_LIGHT_USES_HOVER_COLOR
+  - _SPECULAR_HIGHLIGHTS
+  - _USE_WORLD_SCALE
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -18,6 +24,7 @@ Material:
   stringTagMap:
     RenderType: Fade
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -54,9 +61,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 32c57306df745a147a2e02f8827a8cdc, type: 3}
+        m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 0.24, y: -0.1}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -79,7 +86,7 @@ Material:
     - _AlbedoAlphaSmoothness: 0
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
-    - _BlendedClippingWidth: 1
+    - _BlendedClippingWidth: 0
     - _BlurBorderIntensity: 0
     - _BlurMode: 0
     - _BlurTextureIntensity: 1
@@ -98,11 +105,11 @@ Material:
     - _ClippingPlaneBorder: 0
     - _ClippingPlaneBorderWidth: 0.025
     - _ColorWriteMask: 15
-    - _CullMode: 2
+    - _CullMode: 1
     - _CustomMode: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DirectionalLight: 1
+    - _DirectionalLight: 0
     - _DstBlend: 10
     - _EdgeSmoothingMode: 0
     - _EdgeSmoothingValue: 0.002
@@ -162,7 +169,7 @@ Material:
     - _RoundCornerRadius: 0.25
     - _RoundCorners: 0
     - _RoundCornersHideInterior: 0
-    - _Smoothness: 0.5
+    - _Smoothness: 0.36
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SphericalHarmonics: 0
@@ -190,7 +197,7 @@ Material:
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
     - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    - _Color: {r: 1, g: 0, b: 0, a: 0.5019608}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}

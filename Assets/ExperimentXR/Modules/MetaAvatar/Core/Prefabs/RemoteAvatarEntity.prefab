@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7706462160380266711}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7706462160380266704
 MonoBehaviour:
@@ -47,22 +47,22 @@ MonoBehaviour:
   _creationInfo:
     features: 38
     renderFilters:
-      lodFlags: 31
+      lodFlags: -1
       manifestationFlags: 2
-      viewFlags: 3
-      subMeshInclusionFlags: 2047
-      highQualityFlags: 0
+      viewFlags: -1
+      subMeshInclusionFlags: -1
+      quality: 0
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
   _activeView: 2
   _activeManifestation: 2
-  _activeSubMeshes: 2047
+  _activeSubMeshes: -1
   _activeSubMeshesIncludeUntyped: 1
-  _activeHighQuality: 0
   _bodyTracking: {fileID: 0}
   _facePoseBehavior: {fileID: 0}
   _eyePoseBehavior: {fileID: 0}
   _lipSync: {fileID: 0}
   _criticalJointTypes: 0f000000310000001d000000
-  _useExperimentalFeatures: -1
+  _useCriticalJointJobs: 0
   _debugDrawing:
     drawTrackingPose: 0
     drawBoneNames: 0
@@ -71,12 +71,8 @@ MonoBehaviour:
     drawSkinTransformsInGame: 0
     drawCriticalJoints: 0
     skeletonColor: {r: 1, g: 0, b: 0, a: 1}
-  LoadingStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  EntityLoadingStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
   OnCreatedEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -98,7 +94,6 @@ MonoBehaviour:
   OnLoadFailedEvent:
     m_PersistentCalls:
       m_Calls: []
-  SkinningType: 0
   MotionSmoothingSettings: 0
   _hidden: 0
   useRenderLods: 1
@@ -113,9 +108,3 @@ MonoBehaviour:
   _autoCdnRetry: 1
   _autoCheckChanges: 1
   _changeCheckInterval: 8
-  _debugDrawGazePos: 0
-  _debugDrawGazePosColor: {r: 1, g: 0, b: 1, a: 1}
-  _overrideStreamLod: 0
-  shaderGrayToSolidColorBlend_: 0.7
-  shaderDesatBlend_: 0
-  shaderSolidColor_: {r: 0.12941177, g: 0.19607843, b: 0.3882353, a: 0}

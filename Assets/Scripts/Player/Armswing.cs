@@ -38,6 +38,7 @@ public class Armswing : MonoBehaviour
     [SerializeField] float friction = 1f;
     [SerializeField] float RequiredMovementThreshold = 0.02f;
     [SerializeField] float MinimumPlayerSpeedThreshold = 0.02f;
+    [SerializeField] float MaximumPlayerSpeedThreshold = 20f;
     [SerializeField] float RotationDetectionThreshold = 0.98f;
     [SerializeField] float ReduceDistanceMoved = 1;
     [SerializeField] float maxheight = 0.7f;
@@ -91,6 +92,11 @@ public class Armswing : MonoBehaviour
         if (playerspeed < MinimumPlayerSpeedThreshold)
         {
             playerspeed = 0;
+        }
+
+        if ( playerspeed > MaximumPlayerSpeedThreshold)
+        {
+            playerspeed = MaximumPlayerSpeedThreshold;
         }
 
         if (LeftDistanceMoved != 0 && RightDistanceMoved != 0) playerspeed = playerspeed * 1.5f;

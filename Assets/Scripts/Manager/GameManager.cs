@@ -15,7 +15,7 @@ public class GameManager : Singleton<GameManager>
 
     void Start()
     {
-        OVRPlugin.systemDisplayFrequency = 90.0f;
+        OVRPlugin.systemDisplayFrequency = 72.0f;
     }
 
     void FixedUpdate()

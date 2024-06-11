@@ -2,15 +2,26 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CubeOpaqueBorder
   m_Shader: {fileID: 4800000, guid: c331f6c43a2ef0945864cb668f2653c9, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _BORDER_LIGHT _BORDER_LIGHT_OPAQUE _DIRECTIONAL_LIGHT
-    _EDGE_SMOOTHING_AUTOMATIC _HOVER_COLOR_OVERRIDE _HOVER_LIGHT _SPECULAR_HIGHLIGHTS
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  - _BORDER_LIGHT
+  - _BORDER_LIGHT_OPAQUE
+  - _DIRECTIONAL_LIGHT
+  - _DISABLE_ALBEDO_MAP
+  - _EDGE_SMOOTHING_AUTOMATIC
+  - _HOVER_COLOR_OVERRIDE
+  - _HOVER_LIGHT
+  - _SPECULAR_HIGHLIGHTS
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -18,6 +29,7 @@ Material:
   stringTagMap:
     RenderType: Cutout
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -80,6 +92,9 @@ Material:
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
     - _BlendedClippingWidth: 1
+    - _BlurBorderIntensity: 0
+    - _BlurMode: 0
+    - _BlurTextureIntensity: 1
     - _BorderColorMode: 0
     - _BorderLight: 1
     - _BorderLightOpaque: 1
@@ -119,6 +134,7 @@ Material:
     - _EnvironmentColorIntensity: 0.5
     - _EnvironmentColorThreshold: 1.5
     - _EnvironmentColoring: 0
+    - _Fade: 1
     - _FadeBeginDistance: 0.85
     - _FadeCompleteDistance: 0.5
     - _FadeMinValue: 0
@@ -183,6 +199,7 @@ Material:
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
+    - _BlurBackgroundRect: {r: 0, g: 0, b: 1, a: 1}
     - _BorderColor: {r: 1, g: 1, b: 1, a: 0}
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
@@ -193,6 +210,8 @@ Material:
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
     - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
     - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
+    - _GradientAlpha: {r: 1, g: 1, b: 1, a: 1}
+    - _GradientAlphaTime: {r: 0, g: 0, b: 0, a: 0}
     - _GradientColor0: {r: 0.631373, g: 0.631373, b: 0.631373, a: 0}
     - _GradientColor1: {r: 1, g: 0.690196, b: 0.976471, a: 0.25}
     - _GradientColor2: {r: 0, g: 0.32999998, b: 0.88, a: 0.5}

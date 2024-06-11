@@ -55,7 +55,7 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
         avatarEntity = GameObject.Instantiate(avatarEntity, base.transform);
         this._avatar = avatarEntity.GetComponentInChildren<SampleAvatarEntity>();
         avatarEntity.transform.parent.gameObject.tag = "Player";
-        //GameManager.UpdatePlayerList();
+        GameManager.UpdatePlayerList();
 
         // Init of the OVRPlatform if not started
         if (OvrPlatformInit.status == OvrPlatformInitStatus.NotStarted)
