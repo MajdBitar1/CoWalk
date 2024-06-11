@@ -22,10 +22,10 @@ public class GroupManager : MonoBehaviour
     [SerializeField] NetworkPlayerInfo m_PlayerOneInfo;
     [SerializeField] NetworkPlayerInfo m_PlayerTwoInfo;
     [SerializeField] JukeBox LocalFeedback,RemoteFeedback;
-    [SerializeField] VolumeProfile PostProcessing;
-    private UnityEngine.Rendering.Universal.ChromaticAberration m_ChromaticAberration;
-    private UnityEngine.Rendering.Universal.ColorAdjustments m_ColorAdjustments;
-    private UnityEngine.Rendering.Universal.ColorCurves m_ColorCurves;
+    // [SerializeField] VolumeProfile PostProcessing;
+    // private UnityEngine.Rendering.Universal.ChromaticAberration m_ChromaticAberration;
+    // private UnityEngine.Rendering.Universal.ColorAdjustments m_ColorAdjustments;
+    // private UnityEngine.Rendering.Universal.ColorCurves m_ColorCurves;
 
     [Header("Constants To Tune")]
 
@@ -145,8 +145,6 @@ public class GroupManager : MonoBehaviour
 
     private void SeparationDistanceThresholding(float distance)
     {
-        PostProcessing.TryGet(out m_ColorAdjustments);
-        PostProcessing.TryGet(out m_ChromaticAberration);
         float value = math.max( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
         float grayscalevalue = math.max(0.5f, (distance - SafeSeparationZone) / MaxSeparationZone);
         if (distance > 0)
@@ -158,13 +156,7 @@ public class GroupManager : MonoBehaviour
             // m_ColorCurves.satVsSat.Override(mycurve);
 
             // ACESS POST PROCESSING AND APPLY CHROMATIC ABERRATION
-            m_ChromaticAberration.intensity.Override(value);
-            m_ColorAdjustments.hueShift.Override(distance * -1.5f);
             
-        }
-        else
-        {
-            m_ChromaticAberration.intensity.Override(0);
         }
 
         if (distance <= VirtualTouchDistance)

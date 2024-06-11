@@ -20,7 +20,7 @@ class DemoNetwork : Fusion.Behaviour, INetworkRunnerCallbacks
         await _runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
-            SessionName = "MetaAvartTestRoom",
+            SessionName = "ThePark",
             Scene = SceneManager.GetActiveScene().buildIndex,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
