@@ -33,7 +33,7 @@ RenderSettings:
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 0
-  m_DefaultReflectionResolution: 128
+  m_DefaultReflectionResolution: 64
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: f535c184e7c2c2046afdfdf353461300, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -1184,6 +1184,10 @@ PrefabInstance:
       value: -0.00000002980231
       objectReference: {fileID: 0}
     - target: {fileID: 3121999643486862700, guid: 1d0c5ce9ae27cab4b88cd35738a08552, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.24036385
+      objectReference: {fileID: 0}
+    - target: {fileID: 3121999643486862700, guid: 1d0c5ce9ae27cab4b88cd35738a08552, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.00000002328306
       objectReference: {fileID: 0}
@@ -1240,6 +1244,10 @@ PrefabInstance:
       value: 0.000000030733645
       objectReference: {fileID: 0}
     - target: {fileID: 7177607020932839298, guid: 1d0c5ce9ae27cab4b88cd35738a08552, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.009525553
+      objectReference: {fileID: 0}
+    - target: {fileID: 7177607020932839298, guid: 1d0c5ce9ae27cab4b88cd35738a08552, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.0816156
       objectReference: {fileID: 0}
@@ -1266,6 +1274,10 @@ PrefabInstance:
     - target: {fileID: 8590939900806535248, guid: 1d0c5ce9ae27cab4b88cd35738a08552, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0095274635
+      objectReference: {fileID: 0}
+    - target: {fileID: 8590939900806535248, guid: 1d0c5ce9ae27cab4b88cd35738a08552, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.08161442
       objectReference: {fileID: 0}
     - target: {fileID: 8590939900806535248, guid: 1d0c5ce9ae27cab4b88cd35738a08552, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1858,7 +1870,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 1
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -1877,13 +1889,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 400, z: 0}
+  m_LocalRotation: {x: 0.36336377, y: -0, z: -0, w: 0.9316474}
+  m_LocalPosition: {x: 37, y: 150, z: 328}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 19609883}
-  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 42.614, y: 0, z: 0}
 --- !u!114 &705507996
 MonoBehaviour:
   m_ObjectHideFlags: 0
