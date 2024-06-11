@@ -12,6 +12,10 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
     public GameObject LocalEntityAvatarPrefab;
     public GameObject RemoteEntityAvatarPrefab;
 
+    //MINE
+    public delegate void MetaAvatarSetup();
+    public static event MetaAvatarSetup OnMetaAvatarSetup;
+
     [Networked(OnChanged = nameof(OnAvatarDataChanged)), Capacity(1200)] public NetworkArray<byte> AvatarData { get; }
     [Networked] public int RecordStreamLength { get; set; }
 
@@ -50,6 +54,8 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
         GameObject avatarEntity = (base.HasStateAuthority) ? this.LocalEntityAvatarPrefab : this.RemoteEntityAvatarPrefab;
         avatarEntity = GameObject.Instantiate(avatarEntity, base.transform);
         this._avatar = avatarEntity.GetComponentInChildren<SampleAvatarEntity>();
+        avatarEntity.transform.parent.gameObject.tag = "Player";
+        //GameManager.UpdatePlayerList();
 
         // Init of the OVRPlatform if not started
         if (OvrPlatformInit.status == OvrPlatformInitStatus.NotStarted)
@@ -75,15 +81,21 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
             this._avatar.SetFacePoseProvider(face);
             this._avatar.SetEyePoseProvider(eye);
 
-            // Attache the AvatarNetwork and the Avatar Entity to the OvrRigCamera for getting the position of the user 
-            // GameObject ovrRigCamera = GameObject.Find("OVRCameraRig"); 
-            // TODO: Test
-            // GameObject ovrRigCamera = GameObject.Find("XR Origin"); // TODO tmp
-            // if (ovrRigCamera is null)
-            // {
-            //     throw new System.Exception("XPXR.MetaAvatar: the \"OVRCameraRig\" GameObject is not inside the scene or not correctly named. For using Meta Avatar, please add the OVRCameraRig Prefab inside the scene.");
-            // }
-            // this.transform.SetParent(ovrRigCamera.transform);
+            
+             GameObject Parent = GameObject.Find("origin");
+            //Parent = GameObject.Find("XRORIGIN");
+            if (Parent is null)
+            {
+                throw new System.Exception("XPXR.MetaAvatar: the \"OVRCameraRig\" GameObject is not inside the scene or not correctly named. For using Meta Avatar, please add the OVRCameraRig Prefab inside the scene.");
+            }
+            //             gameObject.transform.parent = Parent.transform;
+            else 
+            {
+                gameObject.transform.position = Parent.transform.position;
+                gameObject.transform.rotation = Parent.transform.rotation;
+                Parent.transform.parent = gameObject.transform;
+                OnMetaAvatarSetup();
+            }
         }
     }
 
