@@ -34,12 +34,13 @@ public class Armswing : MonoBehaviour
 
 
     [Header("Constants")]
-    [SerializeField] float SpeedAmplifier = 2f;
+    [SerializeField] float SpeedAmplifier = 50f;
     [SerializeField] float friction = 1f;
-    [SerializeField] float RequiredMovementThreshold = 0.02f;
+    [SerializeField] float RequiredMovementThreshold = 0.002f;
     [SerializeField] float MinimumPlayerSpeedThreshold = 0.02f;
     [SerializeField] float MaximumPlayerSpeedThreshold = 20f;
     [SerializeField] float RotationDetectionThreshold = 0.98f;
+    [SerializeField] float DifferenceHeadandDirection = 0.6f;
     [SerializeField] float ReduceDistanceMoved = 1;
     [SerializeField] float maxheight = 0.7f;
 
@@ -102,7 +103,7 @@ public class Armswing : MonoBehaviour
         if (LeftDistanceMoved != 0 && RightDistanceMoved != 0) playerspeed = playerspeed * 1.5f;
         playerspeed = playerspeed * SpeedAmplifier;
 
-        if (Vector3.Dot(HipDirection.normalized, HeadDirection.normalized) < 0.86f)
+        if (Vector3.Dot(HipDirection.normalized, HeadDirection.normalized) < DifferenceHeadandDirection)
         {
             playerspeed = playerspeed * 0.8f;
         }
@@ -169,7 +170,7 @@ public class Armswing : MonoBehaviour
         Data.Position = transform.position;
         Data.Direction = direction;
         Data.Speed = playerspeed;
-        Data.CycleDuration = 1;
+        Data.CycleDuration = 2;
         return Data;
     }
 }

@@ -25,6 +25,13 @@ public class WalkingState : IPlayerState
             m_inputData = player.GetArmSwinger().ComputeMovement(player.LeftLocked,player.RightLocked);
             player.moveplayer(m_inputData);
         }
+        else
+        {
+            if (m_inputData.Speed > 0f)
+                m_inputData.Speed -= 1f;
+            if (m_inputData.Speed < 0f)
+                m_inputData.Speed = 0f;
+        }
 
     }
 

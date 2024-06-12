@@ -21,23 +21,17 @@ public class GroupManager : MonoBehaviour
     [SerializeField] PlayerController m_LocalPlayerConroller;
     [SerializeField] NetworkPlayerInfo m_PlayerOneInfo;
     [SerializeField] NetworkPlayerInfo m_PlayerTwoInfo;
-    [SerializeField] JukeBox LocalFeedback,RemoteFeedback;
-    // [SerializeField] VolumeProfile PostProcessing;
-    // private UnityEngine.Rendering.Universal.ChromaticAberration m_ChromaticAberration;
-    // private UnityEngine.Rendering.Universal.ColorAdjustments m_ColorAdjustments;
-    // private UnityEngine.Rendering.Universal.ColorCurves m_ColorCurves;
-    [SerializeField] GameObject AuraObj;
+    [SerializeField] JukeBox RemoteFeedback;
+    [SerializeField] PlayerFeedbackManager m_PlayerFeedbackManager;
 
     [Header("Constants To Tune")]
-
     [SerializeField] float modifyspeedminimumthreshold = 0.1f;
 
     private PlayerMovementData PlayerOneData, PlayerTwoData;
 
     [Header("Tuning Parameters")]
     [SerializeField] float SafeSeparationZone = 30;
-    [SerializeField] float MaxSeparationZone = 200;
-    [SerializeField] float VirtualTouchDistance = 2;
+    [SerializeField] float MaxSeparationZone = 150;
     [SerializeField] float DirectionSeperationCosAngle = 0.7f;
 
 
@@ -64,12 +58,12 @@ public class GroupManager : MonoBehaviour
 
     private void OnEnable()
     {
-        TimeEventManager.OnTimeEvent += UpdateStepFrequency;
+        //TimeEventManager.OnTimeEvent += UpdateStepFrequency;
         GameManager.OnPlayerListUpdated += PlayersUpdated;
     }
     private void OnDisable()
     {
-        TimeEventManager.OnTimeEvent -= UpdateStepFrequency;
+        //TimeEventManager.OnTimeEvent -= UpdateStepFrequency;
         GameManager.OnPlayerListUpdated -= PlayersUpdated;
     }
 
@@ -91,7 +85,6 @@ public class GroupManager : MonoBehaviour
         {
             m_PlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
             m_PlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
-            LocalFeedback = GameManager.LocalPlayerObject.GetComponent<JukeBox>();
             RemoteFeedback = GameManager.RemotePlayerObject.GetComponent<JukeBox>();
             twoplayersready = true;
         }
@@ -135,72 +128,65 @@ public class GroupManager : MonoBehaviour
     {
         //AURA
         SeparationDistanceThresholding(separationDistance);
-        DirectionOrientationThresholding(DirectionOrientationAngle);
-
-        //Speed Assistance
-        SpeedAssistance(deltaSpeed);
-
         //Rhythm Broadcasting
-        UpdateStepFrequency();
+        //UpdateStepFrequency();
+
+
+        //DROPPED
+        //DirectionOrientationThresholding(DirectionOrientationAngle);
+        //Speed Assistance
+        //SpeedAssistance(deltaSpeed);
     }
 
     private void SeparationDistanceThresholding(float distance)
     {
-        float value = math.max( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
-        if (value > 0)
-        {
-
-            // AnimationCurve curve = new AnimationCurve();
-            // curve = AnimationCurve.Linear(0, 0, 1, 1);
-            // TextureCurve mycurve = new TextureCurve(curve, 0f , true , new Vector2(1,1));
-            // m_ColorCurves.lumVsSat.Override(mycurve);
-            // m_ColorCurves.satVsSat.Override(mycurve);
-
-            // ACESS POST PROCESSING AND APPLY CHROMATIC ABERRATION
-            // AuraObj.SetActive(true);
-        }
-        else
-        {
-            AuraObj.SetActive(false);
-        }
+        float value = math.min( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
+        Debug.Log("[GROUPMAN] Value: " + value);
+        m_PlayerFeedbackManager.Aura(value);
     }
 
-
-    private void DirectionOrientationThresholding(float Angle)
+    public UIData PassUIData()
     {
-        if (Angle > DirectionSeperationCosAngle)
-        {
-            //Haptic Feedbacks
-        }
-    }
-
-    private void SpeedAssistance(float deltaspeed)
-    {
-        if ( deltaspeed < 1 || deltaspeed > -1)
-        {
-            return;
-        }
-        else 
-        {
-            // if P1 is moving faster than P2
-            if (deltaspeed > modifyspeedminimumthreshold)
-            {
-                //LOCAL PLAYER IS FASTER, SO WE DO NOTHING, ON THE REMOTE PLAYER SIDE, HIS SPEED WILL INCREASE
-            }
-
-            // if P2 is moving faster than P1
-            else if (deltaspeed < -modifyspeedminimumthreshold)
-            {
-                //LOCAL PLAYER IS SLOWER, SO WE SHOULD AMPLIFY THEIR SPEED
-                float value = math.max ( 1 , math.exp( deltaspeed) ) ;
-                m_LocalPlayerConroller.SetSpeedModifier(value);
-            }
-        }
-    }
-
-    private void UpdateStepFrequency()
-    {
-        LocalFeedback.setcycle(PlayerOneData.CycleDuration);
-        RemoteFeedback.setcycle(averageCycleDuration);
+        UIData data = new UIData();
+        data.PlayerOneCycle = PlayerOneData.CycleDuration;
+        data.PlayerOneSpeed = PlayerOneData.Speed;
+        data.PlayerTwoCycle = PlayerTwoData.CycleDuration;
+        data.PlayerTwoSpeed = PlayerTwoData.Speed;
+        data.SeparationDistance = separationDistance;
+        return data;
+    
     }
 }
+
+
+    // private void DirectionOrientationThresholding(float Angle)
+    // {
+    //     if (Angle > DirectionSeperationCosAngle)
+    //     {
+    //         //Haptic Feedbacks
+    //     }
+    // }
+
+    // private void SpeedAssistance(float deltaspeed)
+    // {
+    //     if ( deltaspeed < 1 || deltaspeed > -1)
+    //     {
+    //         return;
+    //     }
+    //     else 
+    //     {
+    //         // if P1 is moving faster than P2
+    //         if (deltaspeed > modifyspeedminimumthreshold)
+    //         {
+    //             //LOCAL PLAYER IS FASTER, SO WE DO NOTHING, ON THE REMOTE PLAYER SIDE, HIS SPEED WILL INCREASE
+    //         }
+
+    //         // if P2 is moving faster than P1
+    //         else if (deltaspeed < -modifyspeedminimumthreshold)
+    //         {
+    //             //LOCAL PLAYER IS SLOWER, SO WE SHOULD AMPLIFY THEIR SPEED
+    //             float value = math.max ( 1 , math.exp( deltaspeed) ) ;
+    //             m_LocalPlayerConroller.SetSpeedModifier(value);
+    //         }
+    //     }
+    // }

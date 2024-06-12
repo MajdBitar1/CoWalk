@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Unity.VisualScripting;
+using XPXR.Recorder.Models;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,14 +13,17 @@ public class PlayerController : MonoBehaviour
     private WalkingState _walkingstate;
 
     //Player Movement Variables
-    [SerializeField] NetworkPlayerInfo m_NetworkPlayerInfo;
+
     [SerializeField] Armswing m_armswing;
     [SerializeField] ComputeArmRhythm m_armrhythm;
     [SerializeField] GameObject LeftHand, RightHand;
-    [SerializeField] GameObject LeftGestureLock, RightGestureLock;
-    [SerializeField] CharacterController m_CharacterController;
+    [SerializeField] PlayerFeedbackManager playerFeedbackManager;
+    private NetworkPlayerInfo m_NetworkPlayerInfo;
+    public CharacterController m_CharacterController;
+    private JukeBox m_Juekbox;
     private Vector3 m_currentdirection;
     public float PlayerSpeed;
+    public float PlayerCycleDuration=2f;
 
     private PlayerMovementData m_PlayerMoveData = new PlayerMovementData();
 
@@ -42,12 +46,29 @@ public class PlayerController : MonoBehaviour
     void OnDisable()
     {
         AvatarNetworkManager.OnMetaAvatarSetup -= SetupCC;
+
+        XPXRManager.Recorder.StopSession();
+        StartCoroutine( EndTrackingRoutine() );
+    }
+
+    // void OnApplicationQuit()
+    // {
+    //     XPXRManager.Recorder.StopSession();
+    //     StartCoroutine( EndTrackingRoutine() );
+    // }
+
+    IEnumerator EndTrackingRoutine()
+    {
+        yield return new WaitUntil(() => XPXRManager.Recorder.TransfersState() == 0);
+        XPXRManager.Recorder.EndTracing();
     }
 
     private void SetupCC()
     {
         m_NetworkPlayerInfo = GetComponentInParent<NetworkPlayerInfo>();
         m_CharacterController = GetComponentInParent<CharacterController>();
+        m_Juekbox = gameObject.transform.parent.GetComponentInChildren<JukeBox>();
+        playerFeedbackManager.SetJukeBox(m_Juekbox);
         m_armswing.enabled = true;
         m_armrhythm.enabled = true;
     }
@@ -61,6 +82,10 @@ public class PlayerController : MonoBehaviour
         PlayerSpeed = 0;
         m_currentdirection = Vector3.zero;
         isMoving = true;
+
+        ///
+        XPXRManager.Recorder.StartSession();
+        ///
     }
 
     // Update is called once per frame
@@ -68,7 +93,15 @@ public class PlayerController : MonoBehaviour
     {
         stateMachine.Update();
         if (m_NetworkPlayerInfo == null) return;
+        m_PlayerMoveData.CycleDuration = PlayerCycleDuration;
         UpdateNetworkInfo();
+
+        //
+        // SHOULD BE EVERY NBER OF FRAMES AND NOT EVERY FRAME
+        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","PlayerSpeed", new QuantitativeValue(PlayerSpeed) );
+        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","CycleDuration", new QuantitativeValue(PlayerCycleDuration) );
+        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.WorldPosition,"PlayerPos","Posotion", new WorldPosition(transform.position,transform.rotation) );
+        //
     }
 
     public void moveplayer(PlayerMovementData inputdata)
@@ -83,19 +116,18 @@ public class PlayerController : MonoBehaviour
         m_armswing.enabled = state;
         m_armrhythm.enabled = state;
         Debug.Log("Armswing State: " + state);
+        XPXRManager.Recorder.AddLogEvent("Armswing State", "is", state.ToString() ); 
     }
 
     private void UpdateNetworkInfo()
     {
         m_NetworkPlayerInfo.RPC_Update_Speed(PlayerSpeed);
-        m_NetworkPlayerInfo.RPC_Update_CycleDuration(m_armrhythm.averagecycleduration);
+        m_NetworkPlayerInfo.RPC_Update_CycleDuration(PlayerCycleDuration);
         m_NetworkPlayerInfo.RPC_Update_Direction(m_currentdirection);
     }
 
     public void UpdateLock()
     {
-        LeftGestureLock.SetActive(LeftLocked);
-        RightGestureLock.SetActive(RightLocked);
         if (LeftLocked && RightLocked)
         {
             isMoving = false;
@@ -106,6 +138,12 @@ public class PlayerController : MonoBehaviour
             isMoving = true;
             SetArmswing(true);
         }
+        playerFeedbackManager.LockVisualState(LeftLocked,RightLocked);
+    }
+
+    public void ShowMenu()
+    {
+        playerFeedbackManager.ShowMenu();
     }
 
     public void SetSpeedModifier(float speed)
@@ -134,5 +172,13 @@ public class PlayerController : MonoBehaviour
     public Armswing GetArmSwinger()
     {
         return m_armswing;
+    }
+    public JukeBox GetLocalJukeBox()
+    {
+        return m_Juekbox;
+    }
+    public PlayerFeedbackManager GetPlayerFeedbackManager()
+    {
+        return playerFeedbackManager;
     }
 }

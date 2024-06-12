@@ -46,7 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2191ababb94d85c4dbd798e4b9071ed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   StepCycle: 2
   clips: []
   audioSource: {fileID: 9130601300887950552}
@@ -71,8 +70,7 @@ MonoBehaviour:
   NetworkGuid:
     RawGuidValue: b817984112ef22547ac06fad27b48013
   NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 60444224904766085}
+  NetworkedBehaviours: []
   SimulationBehaviours: []
 --- !u!82 &9130601300887950552
 AudioSource:

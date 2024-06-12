@@ -10,7 +10,6 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private InputActionReference m_RightHandGrip;
     [SerializeField] private InputActionReference m_LeftHandTrigger;
     [SerializeField] private InputActionReference m_RightHandTrigger;
-
     public int PrevState = 0;
     public int CurrentState = 0;
 
@@ -49,6 +48,11 @@ public class PlayerInputHandler : MonoBehaviour
             return 4;
         }
 
+        else if (OVRInput.GetUp(OVRInput.Button.Two) || OVRInput.GetUp(OVRInput.Button.Four) ) // Show Menu
+        {
+            return 5;
+        }
+
         return 0;
     }
 
@@ -64,16 +68,26 @@ public class PlayerInputHandler : MonoBehaviour
                 break;
             case 2:
                 //DrawLine
-                m_playercontroller.IsPointingLeft = true;
+                if (prev != 3)
+                {
+                    m_playercontroller.IsPointingLeft = true;
+                }
                 break;
             case 3:
                 //DrawLine
-                m_playercontroller.IsPointingRight = true;
+                if (prev != 2)
+                {
+                    m_playercontroller.IsPointingRight = true;
+                }
                 break;
             case 4:
                 //lockRIGHT
                 m_playercontroller.RightLocked = !m_playercontroller.RightLocked;
                 m_playercontroller.UpdateLock();
+                break;
+            case 5:
+                //ShowMenu
+                m_playercontroller.ShowMenu();
                 break;
             default:
                 // if ( prev == 1 )
