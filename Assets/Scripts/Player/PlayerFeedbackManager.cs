@@ -12,8 +12,7 @@ public class PlayerFeedbackManager : MonoBehaviour
     [SerializeField] GameObject LeftGestureLock, RightGestureLock;
     private PlayerController m_PlayerController;
     private JukeBox m_JukeBox;
-
-    private bool ToTheRight = false;
+    public bool ToTheRight = false;
     private bool AuraBroken = false;
     private int counter = 0;
 
@@ -37,45 +36,49 @@ public class PlayerFeedbackManager : MonoBehaviour
     {
         if (value > 0 && !AuraBroken)
         {
-            if (transform.InverseTransformPoint(GameManager.RemotePlayerObject.transform.position).x > 0)
-            {
-                ToTheRight = true;
-            }
-            else 
-            {
-                ToTheRight = false;
-            }
-            float angle = - 40 * value + 90;
-            if (!ToTheRight)
-            {
-                angle *= -1;
-            }
-            m_AuraObj.gameObject.transform.rotation.eulerAngles.Set(0, angle, 0);
+            Plane myplane = new Plane( Vector3.Cross(m_PlayerController.GetDirection(),Vector3.up), transform.position ); //m_PlayerController.GetDirection()
+            ToTheRight = myplane.GetSide(GameManager.RemotePlayerObject.transform.position);
 
-
+            if (ToTheRight)
+            {
+                m_AuraObj.gameObject.transform.rotation = Quaternion.Euler(0, 80, 0);
+            }
+            else
+            {
+                m_AuraObj.gameObject.transform.rotation = Quaternion.Euler(0, -80, 0);
+            }
+            // float angle = - 40 * value + 90;
+            // if (ToTheRight)
+            // {
+            //     angle *= -1;
+            // }
+            // m_AuraObj.gameObject.transform.rotation = Quaternion.Euler(0, angle, 0);
             m_AuraObj.SetActive(true);
+            //BREAK BUBBLE IF ABOVE MAX DISTANCE OF SEPARATION
             if (value >= 1f)
             {
                 AuraBroken = true;
                 m_AuraObj.SetActive(false);
             }
-            if (value > 0.75f)
-            {
-                if (counter < 40)
-                {
-                    m_AuraMat.SetFloat("Alpha_Fade", 0.5f);
-                }
-                if (counter < 80)
-                {
-                    m_AuraMat.SetFloat("Alpha_Fade", 1f);
-                }
-                else
-                {
-                    counter = 0;
-                }
-                counter++;
-            }
+            //FLICKER EFFECT
+            // if (value > 0.75f)
+            // {
+            //     if (counter < 40)
+            //     {
+            //         m_AuraMat.SetFloat("Alpha_Fade", 0.5f);
+            //     }
+            //     if (counter < 80)
+            //     {
+            //         m_AuraMat.SetFloat("Alpha_Fade", 1f);
+            //     }
+            //     else
+            //     {
+            //         counter = 0;
+            //     }
+            //     counter++;
+            // }
         }
+        //IF AURA IS BROKEN, REUNION WITH PARTNER ACTIVATES IT AGAIN
         if (value <= 0)
         {
             m_AuraObj.SetActive(false);

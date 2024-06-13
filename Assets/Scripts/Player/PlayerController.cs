@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ComputeArmRhythm m_armrhythm;
     [SerializeField] GameObject LeftHand, RightHand;
     [SerializeField] PlayerFeedbackManager playerFeedbackManager;
+
+    public float MAXVALUE = 10f;
     private NetworkPlayerInfo m_NetworkPlayerInfo;
     public CharacterController m_CharacterController;
     private JukeBox m_Juekbox;
@@ -25,7 +27,10 @@ public class PlayerController : MonoBehaviour
     public float PlayerSpeed;
     public float PlayerCycleDuration=2f;
 
+    public float PlayerAverageSpeed = 0f;
+
     private PlayerMovementData m_PlayerMoveData = new PlayerMovementData();
+    private List<float> SpeedBuffer = new List<float>();
 
     //State Dependent Variables
     public bool isMoving;
@@ -89,39 +94,62 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void Update()
+    private void Update()
     {
         stateMachine.Update();
         if (m_NetworkPlayerInfo == null) return;
         m_PlayerMoveData.CycleDuration = PlayerCycleDuration;
-        UpdateNetworkInfo();
-
-        //
+        PlayerAverageSpeed = UpdateSpeedBuffer(PlayerSpeed);
         // SHOULD BE EVERY NBER OF FRAMES AND NOT EVERY FRAME
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","PlayerSpeed", new QuantitativeValue(PlayerSpeed) );
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","CycleDuration", new QuantitativeValue(PlayerCycleDuration) );
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.WorldPosition,"PlayerPos","Posotion", new WorldPosition(transform.position,transform.rotation) );
         //
     }
-
+    private void LateUpdate()
+    {
+        UpdateNetworkInfo();
+    }
     public void moveplayer(PlayerMovementData inputdata)
     {
         m_PlayerMoveData = inputdata;
         m_currentdirection = m_PlayerMoveData.Direction;
         PlayerSpeed = m_PlayerMoveData.Speed;
-        m_CharacterController.SimpleMove(PlayerSpeed * Time.deltaTime * Vector3.ProjectOnPlane(m_currentdirection, Vector3.up) ); // * Runner.DeltaTime
+        Vector3 value = PlayerSpeed * Time.deltaTime * Vector3.ProjectOnPlane(m_currentdirection, Vector3.up);
+        if (value.magnitude > MAXVALUE)
+        {
+            value = value.normalized * MAXVALUE;
+        }
+        m_CharacterController.SimpleMove( value ); // * Runner.DeltaTime
     }
     public void SetArmswing(bool state)
     {
         m_armswing.enabled = state;
         m_armrhythm.enabled = state;
-        Debug.Log("Armswing State: " + state);
+        //Debug.Log("Armswing State: " + state);
         XPXRManager.Recorder.AddLogEvent("Armswing State", "is", state.ToString() ); 
+    }
+
+    private float UpdateSpeedBuffer(float speed)
+    {
+        SpeedBuffer.Add(speed);
+        if (SpeedBuffer.Count > 72)
+        {
+            SpeedBuffer.RemoveAt(0);
+            float avrg = 0;
+            foreach (float s in SpeedBuffer)
+            {
+                avrg += s;
+            }
+            avrg = avrg / SpeedBuffer.Count;
+            return avrg;
+        }
+        return 0;
     }
 
     private void UpdateNetworkInfo()
     {
-        m_NetworkPlayerInfo.RPC_Update_Speed(PlayerSpeed);
+        m_NetworkPlayerInfo.RPC_Update_Speed(PlayerAverageSpeed);
         m_NetworkPlayerInfo.RPC_Update_CycleDuration(PlayerCycleDuration);
         m_NetworkPlayerInfo.RPC_Update_Direction(m_currentdirection);
     }
@@ -144,11 +172,6 @@ public class PlayerController : MonoBehaviour
     public void ShowMenu()
     {
         playerFeedbackManager.ShowMenu();
-    }
-
-    public void SetSpeedModifier(float speed)
-    {
-        m_armswing.SpeedTuning(speed);
     }
 
     public PlayerMovementData GetPlayerMovementData()

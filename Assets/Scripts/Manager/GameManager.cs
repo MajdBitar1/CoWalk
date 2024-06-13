@@ -66,6 +66,7 @@ public class GameManager : Singleton<GameManager>
             if (player.GetComponentInChildren<PlayerController>() != null)
                 {
                     LocalPlayerObject = player;
+                    //LocalPlayerObject.GetComponentInChildren<AudioSource>().volume = 0.5f;
                 }
             else
             {

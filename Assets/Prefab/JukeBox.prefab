@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1943759900258383747}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 48.67287, y: -4.164734, z: 23.482178}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46,8 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2191ababb94d85c4dbd798e4b9071ed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StepCycle: 2
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: 61cf458d20979f2478e4cf2f3c242a45, type: 3}
+  - {fileID: 8300000, guid: f379207ef464149408511a6bd7100e63, type: 3}
   audioSource: {fileID: 9130601300887950552}
 --- !u!114 &83859849749229168
 MonoBehaviour:
@@ -81,16 +82,16 @@ AudioSource:
   m_GameObject: {fileID: 1943759900258383747}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6945617311771159498, guid: f38e22e84b40d044f8bcbad5e0c11990, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 180
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -128,7 +129,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

@@ -12,8 +12,6 @@ public class Armswing : MonoBehaviour
     /// <summary>
     /// Use the Character Controller to Implement Armswinging utilizing the XR Interaction toolkit
     /// </summary>
-    
-    // [SerializeField] CharacterController _mCharacterController;
     [Header("Player Obj Ref")]
     [SerializeField] GameObject lefthand;
     [SerializeField] GameObject righthand;
@@ -23,7 +21,6 @@ public class Armswing : MonoBehaviour
     private Vector3 prevPosLeft, prevPosRight, prevHipDirection;
     private Vector3 direction, HipDirection,HeadDirection;
     private Vector3 PlayerCurrentPosition, PlayerPreviousFramePosition;
-    private float _speedmodifier = 1;
     public PlayerMovementData _playermovementdata;
 
     [Header("Track These")]
@@ -42,7 +39,7 @@ public class Armswing : MonoBehaviour
     [SerializeField] float RotationDetectionThreshold = 0.98f;
     [SerializeField] float DifferenceHeadandDirection = 0.6f;
     [SerializeField] float ReduceDistanceMoved = 1;
-    [SerializeField] float maxheight = 0.7f;
+    //[SerializeField] float maxheight = 0.7f;
 
 
     // Start is called before the first frame update
@@ -134,7 +131,7 @@ public class Armswing : MonoBehaviour
     {
         Vector3 DeltaLeftHand = lefthand.transform.position - prevPosLeft;
         Vector3 VeloLeftHand = DeltaLeftHand; // (Time.deltaTime * 100);
-        if (lefthand.transform.position.y > headheight * maxheight) VeloLeftHand = Vector3.zero;
+        //if (lefthand.transform.position.y > headheight * maxheight) VeloLeftHand = Vector3.zero;
         float LeftDistanceMoved = Mathf.Abs( Vector3.Dot(VeloLeftHand, direction));
         if ( Vector3.Dot(NormalVec, VeloLeftHand.normalized) >= 0.5) LeftDistanceMoved = 0;
         LeftDistanceMoved = LeftDistanceMoved / (Time.deltaTime * ReduceDistanceMoved);	
@@ -146,7 +143,7 @@ public class Armswing : MonoBehaviour
     {
         Vector3 DeltaRightHand = righthand.transform.position - prevPosRight;
         Vector3 VeloRightHand = DeltaRightHand; // (Time.deltaTime * 100);
-        if (righthand.transform.position.y > headheight * maxheight) VeloRightHand = Vector3.zero;
+        //if (righthand.transform.position.y > headheight * maxheight) VeloRightHand = Vector3.zero;
         RightDistanceMoved = Mathf.Abs( Vector3.Dot(VeloRightHand, direction));
         if (Vector3.Dot(NormalVec, VeloRightHand.normalized) >= 0.5) RightDistanceMoved = 0;
         RightDistanceMoved = RightDistanceMoved / (Time.deltaTime * ReduceDistanceMoved);
@@ -157,11 +154,6 @@ public class Armswing : MonoBehaviour
     public Vector3 GetDirection()
     {
         return direction;
-    }
-
-    public void SpeedTuning(float speedmodifier)
-    {
-        _speedmodifier =  speedmodifier;
     }
 
      public PlayerMovementData GetMovementData()

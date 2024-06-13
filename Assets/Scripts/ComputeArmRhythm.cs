@@ -53,15 +53,15 @@ public class ComputeArmRhythm : MonoBehaviour
     }
     private void ComputeRhythm()
     {
-        if (_isMoving)
+        if (m_playercontroller.PlayerAverageSpeed > 1f)
         {
             ResetTimer = 0;
             ComputeRightRhythm();
             ComputeLeftRhythm();
+            UpdateCycles();
             _prevrightsum = _rightsum;
             _prevleftsum = _leftsum;
         }
-
         //Reset the parameters and buffers if the player is not moving for a certain Time
         else
         {
@@ -117,20 +117,17 @@ public class ComputeArmRhythm : MonoBehaviour
     private void RightCycleChanged()
     {
         RightCycleState = !RightCycleState;
-        // Cycle Started, so we add time to it
-        if (RightCycleState)
-        { 
-            temprightcycle += Time.deltaTime;
-        }
         //Cycle Ended, so we add cycle duration to list and play Audio of local footstep
-        else
+        if (!RightCycleState)
         {
+            Debug.Log("[RhythmDetection] Right Cycle Duration: " + temprightcycle);
             if (temprightcycle > MinimumCycleDuration && temprightcycle < MaxCycleDuration)
             {
                 RightCycleDuration.Add(temprightcycle);
+                m_playerfeedback.PlayFootstepSound();   
             }
             //CALL AUDIO MANAGER TO PLAY SOUND
-            m_playerfeedback.PlayFootstepSound();
+
             //BROADCAST DATA TO OTHER PLAYERS
             BroadcastChange();
             temprightcycle = 0;
@@ -140,19 +137,29 @@ public class ComputeArmRhythm : MonoBehaviour
     private void LeftCycleChanged()
     {
         LeftCycleState = !LeftCycleState;
-        if (LeftCycleState) 
+        if(!LeftCycleState)
         {
-            templeftcycle += Time.deltaTime;
-        }
-        else
-        {
+            Debug.Log("[RhythmDetection] Left Cycle Duration: " + templeftcycle);
             if (templeftcycle > MinimumCycleDuration && templeftcycle < MaxCycleDuration)
             {
                 LeftCycleDuration.Add(templeftcycle);
+                m_playerfeedback.PlayFootstepSound();
             }
-            m_playerfeedback.PlayFootstepSound();
             BroadcastChange();
             templeftcycle = 0;
+        }
+    }
+
+    private void UpdateCycles()
+    {
+        if (RightCycleState)
+        { 
+            temprightcycle += Time.deltaTime;
+        }
+
+        if (LeftCycleState) 
+        {
+            templeftcycle += Time.deltaTime;
         }
     }
 
