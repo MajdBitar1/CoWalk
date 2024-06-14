@@ -124,7 +124,6 @@ public class ComputeArmRhythm : MonoBehaviour
             if (temprightcycle > MinimumCycleDuration && temprightcycle < MaxCycleDuration)
             {
                 RightCycleDuration.Add(temprightcycle);
-                m_playerfeedback.PlayFootstepSound();   
             }
             //CALL AUDIO MANAGER TO PLAY SOUND
 
@@ -143,7 +142,6 @@ public class ComputeArmRhythm : MonoBehaviour
             if (templeftcycle > MinimumCycleDuration && templeftcycle < MaxCycleDuration)
             {
                 LeftCycleDuration.Add(templeftcycle);
-                m_playerfeedback.PlayFootstepSound();
             }
             BroadcastChange();
             templeftcycle = 0;

@@ -40,6 +40,8 @@ public class GroupManager : MonoBehaviour
     public float deltaSpeed;
     public float averageCycleDuration;
     public float DirectionOrientationAngle;
+    public float footsteptime = 0f;
+    public float _FootstepCurrentFreq = 2f;
     private bool twoplayersready = false;
 
     [Header("Not Sure if Needed Parameters")]
@@ -67,8 +69,26 @@ public class GroupManager : MonoBehaviour
         GameManager.OnPlayerListUpdated -= PlayersUpdated;
     }
 
-    // Update is called once per frame
+    private void PlayersUpdated()
+    {
+        if (GameManager.PlayerRefList.Count >= 2)
+        {
+            m_PlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
+            m_PlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
+            twoplayersready = true;
+        }
+        else 
+        {
+            twoplayersready = false;
+        }
+    }
+
     void Update()
+    {
+        FootstepsAudio();
+    }
+    // Update is called once per frame
+    void FixedUpdate()
     {
         if (twoplayersready)
         {
@@ -79,22 +99,17 @@ public class GroupManager : MonoBehaviour
         }
     }
 
-    private void PlayersUpdated()
+    private void FootstepsAudio()
     {
-        if (GameManager.PlayerRefList.Count >= 2)
+        footsteptime += Time.deltaTime;
+
+        if (footsteptime >= _FootstepCurrentFreq)
         {
-            m_PlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
-            m_PlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
-            RemoteFeedback = GameManager.RemotePlayerObject.GetComponent<JukeBox>();
-            twoplayersready = true;
-        }
-        else 
-        {
-            twoplayersready = false;
+            m_PlayerFeedbackManager.PlayRemoteFootstepSound();
+            footsteptime = 0;
+            _FootstepCurrentFreq = averageCycleDuration;
         }
     }
-
-
     private void UpdateGroupParameters()
     {
         separationDistance = SeparationDistance2D(PlayerOneData.Position,PlayerTwoData.Position);
@@ -130,19 +145,11 @@ public class GroupManager : MonoBehaviour
         SeparationDistanceThresholding(separationDistance);
         //Rhythm Broadcasting
         //UpdateStepFrequency();
-
-
-        //DROPPED
-        //DirectionOrientationThresholding(DirectionOrientationAngle);
-        //Speed Assistance
-        //SpeedAssistance(deltaSpeed);
     }
 
     private void SeparationDistanceThresholding(float distance)
     {
-        float value = math.min( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
-        Debug.Log("[GROUPMAN] Value: " + value);
-        m_PlayerFeedbackManager.Aura(value);
+        m_PlayerFeedbackManager.Aura(distance);
     }
 
     public UIData PassUIData()
@@ -157,36 +164,3 @@ public class GroupManager : MonoBehaviour
     
     }
 }
-
-
-    // private void DirectionOrientationThresholding(float Angle)
-    // {
-    //     if (Angle > DirectionSeperationCosAngle)
-    //     {
-    //         //Haptic Feedbacks
-    //     }
-    // }
-
-    // private void SpeedAssistance(float deltaspeed)
-    // {
-    //     if ( deltaspeed < 1 || deltaspeed > -1)
-    //     {
-    //         return;
-    //     }
-    //     else 
-    //     {
-    //         // if P1 is moving faster than P2
-    //         if (deltaspeed > modifyspeedminimumthreshold)
-    //         {
-    //             //LOCAL PLAYER IS FASTER, SO WE DO NOTHING, ON THE REMOTE PLAYER SIDE, HIS SPEED WILL INCREASE
-    //         }
-
-    //         // if P2 is moving faster than P1
-    //         else if (deltaspeed < -modifyspeedminimumthreshold)
-    //         {
-    //             //LOCAL PLAYER IS SLOWER, SO WE SHOULD AMPLIFY THEIR SPEED
-    //             float value = math.max ( 1 , math.exp( deltaspeed) ) ;
-    //             m_LocalPlayerConroller.SetSpeedModifier(value);
-    //         }
-    //     }
-    // }

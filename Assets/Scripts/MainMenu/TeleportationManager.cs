@@ -11,7 +11,7 @@ public class TeleportationManager : NetworkBehaviour
     
     [Networked]
     public bool m_playerTwoReady {get; set;} = false;
-    [SerializeField] private scenemanager m_scenemanager;
+    [SerializeField] private GameObject _StartingArea;
 
     public void PlayerReadyCheck(bool state, int playerNumber)
     {
@@ -39,7 +39,7 @@ public class TeleportationManager : NetworkBehaviour
 
     IEnumerator TeleportPlayers()
     {
-        yield return new WaitForSeconds(5.0f);
-        m_scenemanager.LoadParkScene();
+        yield return new WaitForSeconds(3.0f);
+        _StartingArea.SetActive(false);
     }
 }

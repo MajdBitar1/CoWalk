@@ -6,8 +6,6 @@ public class ChangePlatformColor : MonoBehaviour
 {
     [Range(1, 2)]
     public int m_playerNumber;
-
-    private MeshRenderer m_meshRenderer;
     [SerializeField] TeleportationManager m_tpManager;
     void OnEnable()
     {
@@ -38,20 +36,14 @@ public class ChangePlatformColor : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
-    {
-        m_meshRenderer = GetComponent<MeshRenderer>();
-    }
-
     void ChangeColor()
     {
-        m_meshRenderer.material.color = Color.blue;
+        
         m_tpManager.PlayerReadyCheck(true, m_playerNumber);
     }
 
     void ResetColor()
     {
-        m_meshRenderer.material.color = Color.red;
         m_tpManager.PlayerReadyCheck(false, m_playerNumber);
     }
 }
