@@ -14,6 +14,15 @@ public class NetworkPlayerInfo : NetworkBehaviour
     [Networked] 
     public Vector3 Direction { get; set; }
 
+    [Networked]
+    public float SpeedAmplifier { get; set;}
+    [Networked]
+    public float AuraBrightness { get; set;}
+    [Networked]
+    public bool AuraState { get; set; }
+    [Networked]
+    public bool RhythmState { get; set; }   
+
     private PlayerMovementData m_PlayerMoveData ;
 
     void Start()
@@ -40,6 +49,28 @@ public class NetworkPlayerInfo : NetworkBehaviour
     public void RPC_Update_Direction(Vector3 direction)
     {
         Direction = direction;
+    }
+
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_Amplifier(float value)
+    {
+        SpeedAmplifier = value;
+    }
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_AuraState(bool value)
+    {
+        AuraState = value;
+    }
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_RhythmState(bool value)
+    {
+        RhythmState = value;
+    }
+
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_Brightness(float value)
+    {
+        AuraBrightness = value;
     }
 
 

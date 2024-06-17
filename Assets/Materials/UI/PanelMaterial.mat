@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CanvasLinearGradientBlended
+  m_Name: PanelMaterial
   m_Shader: {fileID: 4800000, guid: df5380aa6ab293c4fafbb942ed5da93f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -165,7 +165,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GradientAngle: 69
+    - _GradientAngle: 171
     - _GradientMode: 3
     - _HoverLight: 0
     - _IndependentCorners: 0
@@ -232,12 +232,12 @@ Material:
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
     - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
     - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
-    - _GradientAlpha: {r: 1, g: 1, b: 1, a: 1}
+    - _GradientAlpha: {r: 1, g: 1, b: 0.5882353, a: 0.19607843}
     - _GradientAlphaTime: {r: 0.019394217, g: 0.01950103, b: 0.5029374, a: 1}
-    - _GradientColor0: {r: 0, g: 0.8679245, b: 0.7556049, a: 0}
-    - _GradientColor1: {r: 0, g: 0.58858633, b: 1, a: 0.36765087}
-    - _GradientColor2: {r: 0.46666646, g: 0.3254901, b: 0.57647055, a: 0.997055}
-    - _GradientColor3: {r: 0.46666646, g: 0.3254901, b: 0.57647055, a: 0.997055}
+    - _GradientColor0: {r: 0.15686275, g: 0.36078432, b: 0.6745098, a: 0}
+    - _GradientColor1: {r: 0, g: 0.38845733, b: 0.6603774, a: 0.7499962}
+    - _GradientColor2: {r: 0.11764707, g: 0.28627452, b: 0.627451, a: 1}
+    - _GradientColor3: {r: 0.11764707, g: 0.28627452, b: 0.627451, a: 1}
     - _GradientColor4: {r: 1, g: 1, b: 1, a: 1}
     - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
     - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.75}

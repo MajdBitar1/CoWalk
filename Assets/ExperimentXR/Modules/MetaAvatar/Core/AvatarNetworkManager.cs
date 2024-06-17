@@ -11,6 +11,7 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
     private SampleAvatarEntity _avatar;
     public GameObject LocalEntityAvatarPrefab;
     public GameObject RemoteEntityAvatarPrefab;
+    
 
     //MINE
     public delegate void MetaAvatarSetup();
@@ -62,7 +63,6 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
         {
             OvrPlatformInit.InitializeOvrPlatform();
         }
-
         if (base.HasStateAuthority)
         {
             StartCoroutine(nameof(this.GetOculusID)); // Get the Oculus ID to send to the other users
@@ -80,15 +80,11 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
             OvrAvatarEyePoseBehavior eye = base.gameObject.AddComponent<OvrAvatarEyeTrackingBehaviorOvrPlugin>();
             this._avatar.SetFacePoseProvider(face);
             this._avatar.SetEyePoseProvider(eye);
-
-            
-             GameObject Parent = GameObject.Find("origin");
-            //Parent = GameObject.Find("XRORIGIN");
+            GameObject Parent = GameObject.FindGameObjectWithTag("origin");
             if (Parent is null)
             {
                 throw new System.Exception("XPXR.MetaAvatar: the \"OVRCameraRig\" GameObject is not inside the scene or not correctly named. For using Meta Avatar, please add the OVRCameraRig Prefab inside the scene.");
             }
-            //             gameObject.transform.parent = Parent.transform;
             else 
             {
                 gameObject.transform.position = Parent.transform.position;
@@ -98,7 +94,6 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
             }
         }
     }
-
     private void LateUpdate()
     {
         if (base.HasStateAuthority)

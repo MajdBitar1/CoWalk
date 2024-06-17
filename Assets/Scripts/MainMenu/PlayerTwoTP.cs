@@ -21,6 +21,7 @@ public class PlayerTwoTP : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             //RAISE EVENT THAT P1 IS READY TO TELEPORT
+            GameManager.DefinePlayerTwo(other.gameObject);
             OnPlayerTwoEnterPlatform();
         }
     }

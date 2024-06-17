@@ -67,14 +67,14 @@ public class PlayerInputHandler : MonoBehaviour
                 m_playercontroller.UpdateLock();
                 break;
             case 2:
-                //DrawLine
+                //DrawLineLEFT
                 if (prev != 3)
                 {
                     m_playercontroller.IsPointingLeft = true;
                 }
                 break;
             case 3:
-                //DrawLine
+                //DrawLineRIGHT
                 if (prev != 2)
                 {
                     m_playercontroller.IsPointingRight = true;

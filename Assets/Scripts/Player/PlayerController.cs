@@ -4,6 +4,7 @@ using UnityEngine;
 using Fusion;
 using Unity.VisualScripting;
 using XPXR.Recorder.Models;
+using System.Text.RegularExpressions;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,9 +27,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_currentdirection;
     public float PlayerSpeed;
     public float PlayerCycleDuration=2f;
-
     public float PlayerAverageSpeed = 0f;
-
     private PlayerMovementData m_PlayerMoveData = new PlayerMovementData();
     private List<float> SpeedBuffer = new List<float>();
 
@@ -41,16 +40,21 @@ public class PlayerController : MonoBehaviour
     public bool ReleasedLeftPointing = false;
     public bool ReleasedRightPointing = false;
 
+    [Header("CHEATS")]
+    private bool _Experimenter = false;
+
 
     //
     void OnEnable()
     {
         AvatarNetworkManager.OnMetaAvatarSetup += SetupCC;
+        GroupManager.OnUIUpdated += ChangesFromUI;
     }
 
     void OnDisable()
     {
         AvatarNetworkManager.OnMetaAvatarSetup -= SetupCC;
+        GroupManager.OnUIUpdated -= ChangesFromUI;
 
         XPXRManager.Recorder.StopSession();
         StartCoroutine( EndTrackingRoutine() );
@@ -104,11 +108,13 @@ public class PlayerController : MonoBehaviour
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","PlayerSpeed", new QuantitativeValue(PlayerSpeed) );
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","CycleDuration", new QuantitativeValue(PlayerCycleDuration) );
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.WorldPosition,"PlayerPos","Posotion", new WorldPosition(transform.position,transform.rotation) );
-        //
     }
     private void LateUpdate()
     {
-        UpdateNetworkInfo();
+        if(m_NetworkPlayerInfo != null)
+        {
+            UpdateNetworkInfo();
+        }
     }
     public void moveplayer(PlayerMovementData inputdata)
     {
@@ -171,9 +177,19 @@ public class PlayerController : MonoBehaviour
 
     public void ShowMenu()
     {
-        playerFeedbackManager.ShowMenu();
+        if (_Experimenter)
+        {
+            playerFeedbackManager.ShowMenu();
+        }
     }
 
+    private void ChangesFromUI()
+    {
+        m_armswing.UpdateAmplifier(m_NetworkPlayerInfo.SpeedAmplifier);
+        playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
+        playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
+        playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
+    }
     public PlayerMovementData GetPlayerMovementData()
     {
         return m_PlayerMoveData;
@@ -196,12 +212,12 @@ public class PlayerController : MonoBehaviour
     {
         return m_armswing;
     }
-    public JukeBox GetLocalJukeBox()
-    {
-        return m_Juekbox;
-    }
     public PlayerFeedbackManager GetPlayerFeedbackManager()
     {
         return playerFeedbackManager;
+    }
+    public void SetExperimenter(bool state)
+    {
+        _Experimenter = state;
     }
 }

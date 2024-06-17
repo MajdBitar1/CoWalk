@@ -11,13 +11,13 @@ public class ChangePlatformColor : MonoBehaviour
     {
         if (m_playerNumber == 1)
         {
-            PlayerOneTP.OnPlayerEnterPlatform += ChangeColor;
-            PlayerOneTP.OnPlayerExitPlatform += ResetColor;
+            PlayerOneTP.OnPlayerEnterPlatform += SetPlayer;
+            PlayerOneTP.OnPlayerExitPlatform += ResetPlayer;
         }
         else
         {
-            PlayerTwoTP.OnPlayerTwoEnterPlatform += ChangeColor;
-            PlayerTwoTP.OnPlayerTwoExitPlatform += ResetColor;
+            PlayerTwoTP.OnPlayerTwoEnterPlatform += SetPlayer;
+            PlayerTwoTP.OnPlayerTwoExitPlatform += ResetPlayer;
         }
     }
 
@@ -25,24 +25,23 @@ public class ChangePlatformColor : MonoBehaviour
     {
         if(m_playerNumber == 1)
         {
-        PlayerOneTP.OnPlayerEnterPlatform -= ChangeColor;
-        PlayerOneTP.OnPlayerExitPlatform -= ResetColor;
+        PlayerOneTP.OnPlayerEnterPlatform -= SetPlayer;
+        PlayerOneTP.OnPlayerExitPlatform -= ResetPlayer;
         }
         else
         {
-        PlayerTwoTP.OnPlayerTwoEnterPlatform -= ChangeColor;
-        PlayerTwoTP.OnPlayerTwoExitPlatform -= ResetColor;
+        PlayerTwoTP.OnPlayerTwoEnterPlatform -= SetPlayer;
+        PlayerTwoTP.OnPlayerTwoExitPlatform -= ResetPlayer;
         }
     }
 
     // Start is called before the first frame update
-    void ChangeColor()
+    void SetPlayer()
     {
-        
         m_tpManager.PlayerReadyCheck(true, m_playerNumber);
     }
 
-    void ResetColor()
+    void ResetPlayer()
     {
         m_tpManager.PlayerReadyCheck(false, m_playerNumber);
     }

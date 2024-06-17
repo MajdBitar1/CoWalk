@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -21,6 +22,7 @@ public class PlayerOneTP : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             //RAISE EVENT THAT P1 IS READY TO TELEPORT
+            GameManager.DefinePlayerOne(other.gameObject);
             OnPlayerEnterPlatform();
         }
     }

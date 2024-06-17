@@ -156,7 +156,7 @@ public class Armswing : MonoBehaviour
         return direction;
     }
 
-     public PlayerMovementData GetMovementData()
+    public PlayerMovementData GetMovementData()
     {
         PlayerMovementData Data = new PlayerMovementData();
         Data.Position = transform.position;
@@ -164,6 +164,11 @@ public class Armswing : MonoBehaviour
         Data.Speed = playerspeed;
         Data.CycleDuration = 2;
         return Data;
+    }
+
+    public void UpdateAmplifier(float value)
+    {
+        SpeedAmplifier = 200 * value;
     }
 }
 

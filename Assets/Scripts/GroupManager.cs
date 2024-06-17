@@ -17,6 +17,10 @@ using Unity.Mathematics;
 // for each player so that they can adjust their movement accordingly and receive proper feedback based on other player's actions.
 public class GroupManager : MonoBehaviour
 {
+
+    public delegate void UIUpdated();
+    public static event UIUpdated OnUIUpdated;
+
     [Header("Input Data")]
     [SerializeField] PlayerController m_LocalPlayerConroller;
     [SerializeField] NetworkPlayerInfo m_PlayerOneInfo;
@@ -161,6 +165,31 @@ public class GroupManager : MonoBehaviour
         data.PlayerTwoSpeed = PlayerTwoData.Speed;
         data.SeparationDistance = separationDistance;
         return data;
-    
+    }
+
+    public void ButtonUpdatedValues(bool AuraState,bool RhythmState)
+    {
+        if(m_PlayerOneInfo == null || m_PlayerTwoInfo == null)
+        {
+            return;
+        }
+        m_PlayerOneInfo.RPC_Update_AuraState(AuraState);
+        m_PlayerTwoInfo.RPC_Update_AuraState(AuraState);
+
+        m_PlayerTwoInfo.RPC_Update_RhythmState(RhythmState);
+        m_PlayerTwoInfo.RPC_Update_RhythmState(RhythmState);
+        OnUIUpdated();
+    }
+    public void SliderUpdatedValues(float SpeedAmpValue, float BrightnessValue)
+    {
+        if(m_PlayerOneInfo == null || m_PlayerTwoInfo == null)
+        {
+            return;
+        }
+
+        m_PlayerOneInfo.RPC_Update_Amplifier(SpeedAmpValue);
+        m_PlayerTwoInfo.RPC_Update_Amplifier(SpeedAmpValue);
+        m_PlayerOneInfo.RPC_Update_Brightness(BrightnessValue);
+        m_PlayerTwoInfo.RPC_Update_Brightness(BrightnessValue);
     }
 }
