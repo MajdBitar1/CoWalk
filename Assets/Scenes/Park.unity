@@ -777,7 +777,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3359015998430233828, guid: b4a40175a4ff05e45a3c4b0e12ea857c, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateSliderValues
+      value: UpdateSliderValue
       objectReference: {fileID: 0}
     - target: {fileID: 3359015998430233828, guid: b4a40175a4ff05e45a3c4b0e12ea857c, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -3094,7 +3094,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3359015998430233828, guid: b4a40175a4ff05e45a3c4b0e12ea857c, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateSliderValues
+      value: UpdateSliderValue
       objectReference: {fileID: 0}
     - target: {fileID: 3359015998430233828, guid: b4a40175a4ff05e45a3c4b0e12ea857c, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -3217,6 +3217,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fda4953718e0264291c42cb2a637fb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &381131334 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3359015998430233828, guid: b4a40175a4ff05e45a3c4b0e12ea857c, type: 3}
+  m_PrefabInstance: {fileID: 350082050}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &409295978
@@ -3454,7 +3465,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &459662815
 Transform:
@@ -3559,7 +3570,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &475241137
 Transform:
@@ -3725,7 +3736,7 @@ Transform:
   m_GameObject: {fileID: 516281102}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0.26, y: 0.5, z: -0.01}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -3765,6 +3776,7 @@ MonoBehaviour:
   IsPointingRight: 0
   ReleasedLeftPointing: 0
   ReleasedRightPointing: 0
+  RhythmEnabled: 0
 --- !u!114 &516281105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3777,16 +3789,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70db9e7f37400624294622ee7b6f6ddd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_playercontroller: {fileID: 0}
-  m_playerfeedback: {fileID: 0}
-  m_lefthand: {fileID: 0}
-  m_righthand: {fileID: 0}
-  ResetAfterTime: 2
-  MinimumCycleDuration: 0.8
+  ResetAfterTime: 4
+  MinimumCycleDuration: 1
   MaxCycleDuration: 4
   BufferSize: 20
-  RightCycleDuration: []
-  LeftCycleDuration: []
+  BroadcastTimeInvertal: 3
+  GlobalTimer: 0
 --- !u!114 &516281106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3869,6 +3877,7 @@ MonoBehaviour:
   RightGestureLock: {fileID: 228839646}
   SafeSeparationZone: 10
   MaxSeparationZone: 30
+  RemoteFeedback: {fileID: 0}
   ToTheRight: 0
   AuraEnabled: 0
   RhythmEnabled: 0
@@ -4106,7 +4115,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &674025855
 Transform:
@@ -5397,11 +5406,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: -0.00000014901161, z: 0}
---- !u!1 &911973494 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2534619377013860606, guid: 379af62b7ea687d4a9144444fc5b419e, type: 3}
-  m_PrefabInstance: {fileID: 1312286293}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &926857159
 GameObject:
   m_ObjectHideFlags: 0
@@ -5705,7 +5709,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1126287636
 Transform:
@@ -6184,7 +6188,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1231469607
 Transform:
@@ -6535,7 +6539,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1317326890
 Transform:
@@ -6575,7 +6579,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1336124624
 Transform:
@@ -6768,6 +6772,17 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.08828581
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1346199523 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3359015998430233828, guid: b4a40175a4ff05e45a3c4b0e12ea857c, type: 3}
+  m_PrefabInstance: {fileID: 124694604}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1360402363
 GameObject:
   m_ObjectHideFlags: 0
@@ -7568,8 +7583,8 @@ MonoBehaviour:
   SeparationDistance: {fileID: 1702032087}
   PlayerTwoSpeed: {fileID: 1195834901}
   PlayerTwoCycle: {fileID: 1645456837}
-  _SpeedAmp_Slider: {fileID: 0}
-  _Brightness_Slider: {fileID: 0}
+  _SpeedAmp_Slider: {fileID: 1346199523}
+  _Brightness_Slider: {fileID: 381131334}
 --- !u!4 &1617982365
 Transform:
   m_ObjectHideFlags: 0
@@ -7844,7 +7859,6 @@ MonoBehaviour:
   m_LocalPlayerConroller: {fileID: 516281104}
   m_PlayerOneInfo: {fileID: 0}
   m_PlayerTwoInfo: {fileID: 0}
-  RemoteFeedback: {fileID: 0}
   m_PlayerFeedbackManager: {fileID: 516281109}
   modifyspeedminimumthreshold: 0.1
   SafeSeparationZone: 30
@@ -7852,11 +7866,12 @@ MonoBehaviour:
   DirectionSeperationCosAngle: 0.7
   separationDistance: 0
   deltaSpeed: 0
-  averageCycleDuration: 0
+  averageCycleDuration: 2
   DirectionOrientationAngle: 0
   footsteptime: 0
   _FootstepCurrentFreq: 2
   averageSpeed: 0
+  DistanceToCover: 10
 --- !u!43 &1693416430
 Mesh:
   m_ObjectHideFlags: 0
@@ -9396,7 +9411,6 @@ MonoBehaviour:
   _interpolationDataSource: 0
   playercount: 0
   NetworkManager: {fileID: 2221620535798641765, guid: 51a52af08a1de7b46b066e44e4f357f3, type: 3}
-  XRXP: {fileID: 911973494}
 --- !u!4 &2134667413
 Transform:
   m_ObjectHideFlags: 0

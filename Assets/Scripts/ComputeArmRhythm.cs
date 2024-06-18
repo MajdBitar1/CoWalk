@@ -4,16 +4,22 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController))]
 public class ComputeArmRhythm : MonoBehaviour
 {
-    [SerializeField] PlayerController m_playercontroller;
-    [SerializeField] PlayerFeedbackManager m_playerfeedback;
-    [SerializeField] GameObject m_lefthand, m_righthand;
+    private PlayerController m_playercontroller;
+    private PlayerFeedbackManager m_playerfeedback;
+    private GameObject m_lefthand, m_righthand;
     [SerializeField] float ResetAfterTime=4f;
     [SerializeField] float MinimumCycleDuration = 0.4f;
     [SerializeField] float MaxCycleDuration = 3f;
     [SerializeField] int BufferSize = 30;
+
+    [SerializeField] private float BroadcastTimeInvertal = 3f;
+    [SerializeField] private float GlobalTimer = 0f;
     
-    public List<float> RightCycleDuration = new List<float>();
-    public List<float> LeftCycleDuration = new List<float>();
+    // public List<float> RightCycleDuration = new List<float>();
+    // public List<float> LeftCycleDuration = new List<float>();
+
+    private float totaldurationright, totaldurationleft;
+    private int totalcountright, totalcountleft;
     private float _rightsum, _leftsum;
     private bool _isMoving = false;
     private float averagecycleduration;
@@ -21,15 +27,18 @@ public class ComputeArmRhythm : MonoBehaviour
     private Queue<float> Right_Swing_Elevation_Buffer;
     private Queue<float> Left_Swing_Elevation_Buffer;
     private float _prevrightsum ,_prevleftsum;
-    private bool RightCycleState, LeftCycleState;
+    private bool ActivateCycleRight, ActivateCycleLeft;
     private float temprightcycle, templeftcycle;
-    private int _ResetBuffersCounter = 0;
     // Start is called before the first frame update
 
     void Awake()
     {
         Right_Swing_Elevation_Buffer = new Queue<float>(BufferSize);
         Left_Swing_Elevation_Buffer = new Queue<float>(BufferSize);
+        totalcountleft = 0;
+        totalcountright = 0;
+        totaldurationleft = 0;
+        totaldurationright = 0;
     }
     void Start()
     {        
@@ -53,12 +62,12 @@ public class ComputeArmRhythm : MonoBehaviour
     }
     private void ComputeRhythm()
     {
-        if (m_playercontroller.PlayerAverageSpeed > 1f)
+        if (m_playercontroller.PlayerAverageSpeed > 0f)
         {
             ResetTimer = 0;
             ComputeRightRhythm();
             ComputeLeftRhythm();
-            UpdateCycles();
+            UpdateTimers();
             _prevrightsum = _rightsum;
             _prevleftsum = _leftsum;
         }
@@ -84,13 +93,7 @@ public class ComputeArmRhythm : MonoBehaviour
         }
         Right_Swing_Elevation_Buffer.Enqueue(m_righthand.transform.localPosition.y);
         _rightsum += m_righthand.transform.localPosition.y;
-
-
-        if (!RightCycleState && (_rightsum - _prevrightsum < 0))
-        {
-            RightCycleChanged();
-        }
-        else if (RightCycleState && (_rightsum - _prevrightsum > 0))
+        if  (_rightsum - _prevrightsum < -0.1) 
         {
             RightCycleChanged();
         }
@@ -104,89 +107,110 @@ public class ComputeArmRhythm : MonoBehaviour
         }
         Left_Swing_Elevation_Buffer.Enqueue(m_lefthand.transform.localPosition.y);
         _leftsum += m_lefthand.transform.localPosition.y;
-
-        if (!LeftCycleState && (_leftsum - _prevleftsum < 0))
-        {
-            LeftCycleChanged();
-        }
-        else if (LeftCycleState && (_leftsum - _prevleftsum > 0))
+        if (_leftsum - _prevleftsum < -0.1)
         {
             LeftCycleChanged();
         }
     }
     private void RightCycleChanged()
     {
-        RightCycleState = !RightCycleState;
+        ActivateCycleRight = !ActivateCycleRight;
         //Cycle Ended, so we add cycle duration to list and play Audio of local footstep
-        if (!RightCycleState)
+        if (!ActivateCycleRight)
         {
-            Debug.Log("[RhythmDetection] Right Cycle Duration: " + temprightcycle);
-            if (temprightcycle > MinimumCycleDuration && temprightcycle < MaxCycleDuration)
+            if (temprightcycle > MinimumCycleDuration)
             {
-                RightCycleDuration.Add(temprightcycle);
+                // RightCycleDuration.Add(temprightcycle);
+                totaldurationright += temprightcycle;
+                totalcountright++;
+                temprightcycle = 0;
             }
-            //CALL AUDIO MANAGER TO PLAY SOUND
-
-            //BROADCAST DATA TO OTHER PLAYERS
-            BroadcastChange();
-            temprightcycle = 0;
+            if (temprightcycle > MaxCycleDuration)
+            {
+                temprightcycle = 0;
+            }
         }
     }
 
     private void LeftCycleChanged()
-    {
-        LeftCycleState = !LeftCycleState;
-        if(!LeftCycleState)
         {
-            Debug.Log("[RhythmDetection] Left Cycle Duration: " + templeftcycle);
-            if (templeftcycle > MinimumCycleDuration && templeftcycle < MaxCycleDuration)
+        ActivateCycleLeft = !ActivateCycleLeft;
+        if (!ActivateCycleLeft)
+        {
+            if (templeftcycle > MinimumCycleDuration)
             {
-                LeftCycleDuration.Add(templeftcycle);
+                // LeftCycleDuration.Add(templeftcycle);
+                totaldurationleft += templeftcycle;
+                totalcountleft++;
+                templeftcycle = 0;
             }
-            BroadcastChange();
-            templeftcycle = 0;
+            if (templeftcycle > MaxCycleDuration)
+            {
+                templeftcycle = 0;
+            }
         }
     }
 
-    private void UpdateCycles()
+    private void UpdateTimers()
     {
-        if (RightCycleState)
+        if (ActivateCycleRight)
         { 
             temprightcycle += Time.deltaTime;
         }
-
-        if (LeftCycleState) 
+        if (ActivateCycleLeft) 
         {
             templeftcycle += Time.deltaTime;
         }
+
+        GlobalTimer += Time.deltaTime;
+        if (GlobalTimer > BroadcastTimeInvertal)
+        {
+            CalculateAverageCycleDuration();
+            GlobalTimer = 0;
+        }
     }
 
-    private void BroadcastChange()
+    private void CalculateAverageCycleDuration()
     {
-        if (RightCycleDuration.Count != 0)
+        float sum = 0;
+
+        //add all cycles together
+        if (totalcountright > 0)
         {
-            foreach (float item in RightCycleDuration)
-            {
-                averagecycleduration += item;
-            }
+            sum += totaldurationright;
         }
-        if (LeftCycleDuration.Count != 0)
-        {           
-            foreach (float item in LeftCycleDuration)
-            {
-                averagecycleduration += item;
-            }
+        if (totalcountleft > 0)
+        {
+            sum += totaldurationleft;
         }
-        averagecycleduration /= RightCycleDuration.Count + LeftCycleDuration.Count;
+
+        //Divide by total count to get average
+
+        if (totalcountleft + totalcountright == 0)
+        {
+            averagecycleduration = 2.5f;
+        }
+        else
+        {
+            averagecycleduration = sum / (totalcountright + totalcountleft);
+        }
+
+        Debug.Log("Average Cycle Duration: " + averagecycleduration);
+        //Broadcast this average
         m_playercontroller.PlayerCycleDuration = averagecycleduration;
-        _ResetBuffersCounter++;
-        if (_ResetBuffersCounter >= 20)
-        {
-            RightCycleDuration.Clear();
-            LeftCycleDuration.Clear();
-        }
+
+        //Reset the parameters and buffers
+        ResetAfterBroadcast();
     }
 
+
+    private void ResetAfterBroadcast()
+    {
+        totalcountleft = 0;
+        totalcountright = 0;
+        totaldurationleft = 0;
+        totaldurationright = 0;
+    }
     private void ResetParametersAndBuffers()
     {
         _rightsum = 0;
@@ -196,11 +220,11 @@ public class ComputeArmRhythm : MonoBehaviour
         temprightcycle = 0;
         templeftcycle = 0;
         averagecycleduration = 0;
-        _ResetBuffersCounter = 0;
         Right_Swing_Elevation_Buffer.Clear();
         Left_Swing_Elevation_Buffer.Clear();
-        RightCycleDuration.Clear();
-        LeftCycleDuration.Clear();
+        // RightCycleDuration.Clear();
+        // LeftCycleDuration.Clear();
+        ResetAfterBroadcast();
     }
     public float GetAverageCycleDuration()
     {

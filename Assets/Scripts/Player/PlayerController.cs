@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     public bool IsPointingRight = false;
     public bool ReleasedLeftPointing = false;
     public bool ReleasedRightPointing = false;
+    public bool RhythmEnabled = false;
 
     [Header("CHEATS")]
     private bool _Experimenter = false;
@@ -77,7 +78,6 @@ public class PlayerController : MonoBehaviour
         m_NetworkPlayerInfo = GetComponentInParent<NetworkPlayerInfo>();
         m_CharacterController = GetComponentInParent<CharacterController>();
         m_Juekbox = gameObject.transform.parent.GetComponentInChildren<JukeBox>();
-        playerFeedbackManager.SetJukeBox(m_Juekbox);
         m_armswing.enabled = true;
         m_armrhythm.enabled = true;
     }
@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
         Vector3 value = PlayerSpeed * Time.deltaTime * Vector3.ProjectOnPlane(m_currentdirection, Vector3.up);
         if (value.magnitude > MAXVALUE)
         {
-            value = value.normalized * MAXVALUE;
+            value = value.normalized * MAXVALUE * ( 1 + m_NetworkPlayerInfo.SpeedAmplifier);
         }
         m_CharacterController.SimpleMove( value ); // * Runner.DeltaTime
     }
@@ -188,6 +188,7 @@ public class PlayerController : MonoBehaviour
         m_armswing.UpdateAmplifier(m_NetworkPlayerInfo.SpeedAmplifier);
         playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
+        RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
     }
     public PlayerMovementData GetPlayerMovementData()

@@ -55,14 +55,18 @@ public class UIManager : MonoBehaviour
         StateRhythm = !StateRhythm;
         UpdateButtonValues();
     }
+    public void UpdateSliderValue()
+    {
+        UpdateButtonValues();
+    }
 
     private void UpdateButtonValues()
     {
-        _groupman.ButtonUpdatedValues(StateAura, StateRhythm);
+        _groupman.ButtonUpdatedValues(StateAura, StateRhythm, _SpeedAmp_Slider.value, _Brightness_Slider.value);
         
     }
-    public void UpdateSliderValues()
-    {
-        _groupman.SliderUpdatedValues(_SpeedAmp_Slider.value, _Brightness_Slider.value);
-    }
+    // public void UpdateSliderValues()
+    // {
+    //     _groupman.SliderUpdatedValues();
+    // }
 }

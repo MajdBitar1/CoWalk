@@ -80,7 +80,7 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
             OvrAvatarEyePoseBehavior eye = base.gameObject.AddComponent<OvrAvatarEyeTrackingBehaviorOvrPlugin>();
             this._avatar.SetFacePoseProvider(face);
             this._avatar.SetEyePoseProvider(eye);
-            GameObject Parent = GameObject.FindGameObjectWithTag("origin");
+            GameObject Parent = GameManager.GetOrigin();
             if (Parent is null)
             {
                 throw new System.Exception("XPXR.MetaAvatar: the \"OVRCameraRig\" GameObject is not inside the scene or not correctly named. For using Meta Avatar, please add the OVRCameraRig Prefab inside the scene.");

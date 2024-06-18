@@ -20,9 +20,9 @@ class MetaAvatarFusionModule : Fusion.Behaviour, INetworkRunnerCallbacks
 
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
 
-    private NetworkRunner _runner;
+    [SerializeField] private NetworkRunner _runner;
 
-    public void OnEnable()
+    public void Start()
     {
         MetaAvatarModuleInstance = this;
         Debug.Log("XPXR.MetaAvatar-Fusion: Starting of an other INetworkRunnerCallbacks");

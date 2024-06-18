@@ -16,10 +16,8 @@ public class PlayerFeedbackManager : MonoBehaviour
     [SerializeField] float SafeSeparationZone = 5;
     [SerializeField] float MaxSeparationZone = 10;
 
-
-    private JukeBox RemoteFeedback;
+    [SerializeField] private JukeBox RemoteFeedback;
     private PlayerController m_PlayerController;
-    private JukeBox m_JukeBox;
     private bool _ShowMenu = false;
     public bool ToTheRight = false;
     private bool AuraBroken = false;
@@ -41,7 +39,7 @@ public class PlayerFeedbackManager : MonoBehaviour
     }
     private void GetRemoteFeedback()
     {
-        RemoteFeedback = GameManager.RemotePlayerObject.GetComponent<JukeBox>();
+        RemoteFeedback = GameManager.RemotePlayerObject.GetComponentInChildren<JukeBox>();
     }
 
     private void Start()
@@ -52,10 +50,10 @@ public class PlayerFeedbackManager : MonoBehaviour
 
     public void PlayRemoteFootstepSound()
     {
-        if (!RhythmEnabled)
-        {
-            return;
-        }
+        // if (!RhythmEnabled)
+        // {
+        //     return;
+        // }
         if(RemoteFeedback != null)
         {
         RemoteFeedback.PlayFootstepSound();
@@ -167,8 +165,5 @@ public class PlayerFeedbackManager : MonoBehaviour
         
         }
     }
-    public void SetJukeBox(JukeBox jukeBox)
-    {
-        m_JukeBox = jukeBox;
-    }
+
 }

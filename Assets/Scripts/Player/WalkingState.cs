@@ -20,7 +20,7 @@ public class WalkingState : IPlayerState
         {
             player.stateMachine.TransitionTo(player.stateMachine.idlestate);
         }
-        if (OVRInput.Get(OVRInput.Touch.PrimaryThumbRest) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest))
+        if (OVRInput.Get(OVRInput.Touch.Any))//(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest))
         {
             m_inputData = player.GetArmSwinger().ComputeMovement(player.LeftLocked,player.RightLocked);
             player.moveplayer(m_inputData);

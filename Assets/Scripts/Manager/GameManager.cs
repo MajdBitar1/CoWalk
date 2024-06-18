@@ -11,14 +11,19 @@ public class GameManager : Singleton<GameManager>
 
     public static List<GameObject> PlayerRefList = new List<GameObject>();
     public static GameObject LocalPlayerObject, RemotePlayerObject;
-    public static GameObject PlayerOne, PlayerTwo;
+    public static GameObject PlayerOne, PlayerTwo, origin;
     public int playercount = 0;
-    [SerializeField] GameObject NetworkManager,XRXP;
+    [SerializeField] GameObject NetworkManager;
 
+    void Awake()
+    {
+        Instantiate(NetworkManager);
+        OVRPlugin.systemDisplayFrequency = 72.0f;
+        origin = GameObject.Find("origin");
+    }
     void Start()
     {
-        OVRPlugin.systemDisplayFrequency = 72.0f;
-        StartCoroutine( SettingUpRunner() );
+        //StartCoroutine( SettingUpRunner() );
     }
     private void LateUpdate()
     {
@@ -89,6 +94,11 @@ public class GameManager : Singleton<GameManager>
         Instantiate(NetworkManager);
         yield return new WaitForSeconds(1);
         //XRXP.SetActive(true);
+    }
+
+    public static GameObject GetOrigin()
+    {
+        return origin;
     }
 
     // public static void ResetPlayerList()

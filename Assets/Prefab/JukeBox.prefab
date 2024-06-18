@@ -47,7 +47,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 61cf458d20979f2478e4cf2f3c242a45, type: 3}
+  - {fileID: 8300000, guid: de009ba033a45534daaed9f10b8b03fd, type: 3}
+  - {fileID: 8300000, guid: f3be513c080dbaf438bb67271d6862c3, type: 3}
+  - {fileID: 8300000, guid: e39147b75cec1774c99a5320dc85dc21, type: 3}
+  - {fileID: 8300000, guid: c4f162a7447d7c546a5279abd6882178, type: 3}
+  - {fileID: 8300000, guid: a742a1100551bb442bb2d37ee7d53bb0, type: 3}
+  - {fileID: 8300000, guid: e95ac983ea0852c4b88c6c228919df46, type: 3}
   audioSource: {fileID: 9130601300887950552}
 --- !u!114 &83859849749229168
 MonoBehaviour:
@@ -84,7 +89,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 6945617311771159498, guid: f38e22e84b40d044f8bcbad5e0c11990, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -93,7 +98,7 @@ AudioSource:
   Priority: 180
   DopplerLevel: 1
   MinDistance: 0
-  MaxDistance: 8
+  MaxDistance: 30
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
