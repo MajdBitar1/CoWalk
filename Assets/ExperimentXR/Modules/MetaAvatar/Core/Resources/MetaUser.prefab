@@ -90,8 +90,7 @@ MonoBehaviour:
   Flags: 2305
   NetworkGuid:
     RawGuidValue: 547d2892812ec744abc7f790de1e96ad
-  NestedObjects:
-  - {fileID: 1881281035309257148}
+  NestedObjects: []
   NetworkedBehaviours:
   - {fileID: -7428658482199926335}
   - {fileID: 700599709998172461}
@@ -277,28 +276,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9130601300887950552, guid: b817984112ef22547ac06fad27b48013, type: 3}
       propertyPath: MaxDistance
-      value: 50
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 9130601300887950552, guid: b817984112ef22547ac06fad27b48013, type: 3}
       propertyPath: MinDistance
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b817984112ef22547ac06fad27b48013, type: 3}
---- !u!114 &1881281035309257148 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 83859849749229168, guid: b817984112ef22547ac06fad27b48013, type: 3}
-  m_PrefabInstance: {fileID: 1959709278020435916}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &6008429695152055508 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5210792096763714328, guid: b817984112ef22547ac06fad27b48013, type: 3}

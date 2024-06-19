@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5210792096763714328}
   - component: {fileID: 60444224904766085}
-  - component: {fileID: 83859849749229168}
   - component: {fileID: 9130601300887950552}
   m_Layer: 0
   m_Name: JukeBox
@@ -54,29 +53,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a742a1100551bb442bb2d37ee7d53bb0, type: 3}
   - {fileID: 8300000, guid: e95ac983ea0852c4b88c6c228919df46, type: 3}
   audioSource: {fileID: 9130601300887950552}
---- !u!114 &83859849749229168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1943759900258383747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 1
-  AoiPositionSource: {fileID: 0}
-  Flags: 2305
-  NetworkGuid:
-    RawGuidValue: b817984112ef22547ac06fad27b48013
-  NestedObjects: []
-  NetworkedBehaviours: []
-  SimulationBehaviours: []
 --- !u!82 &9130601300887950552
 AudioSource:
   m_ObjectHideFlags: 0
@@ -98,9 +74,9 @@ AudioSource:
   Priority: 180
   DopplerLevel: 1
   MinDistance: 0
-  MaxDistance: 30
+  MaxDistance: 10
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

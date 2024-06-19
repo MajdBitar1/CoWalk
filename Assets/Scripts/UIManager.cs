@@ -21,6 +21,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI PlayerTwoCycle;
     [SerializeField] Slider _SpeedAmp_Slider;
     [SerializeField] Slider _Brightness_Slider;
+
+    [SerializeField] Toggle AuraToggle, RhythmToggle;
+
     private UIData _data;
     private bool StateAura = false;
     private bool StateRhythm = false;
@@ -48,11 +51,13 @@ public class UIManager : MonoBehaviour
     public void ButtonUpdatedAura()
     {
         StateAura = !StateAura;
+        AuraToggle.isOn = StateAura;
         UpdateButtonValues();
     }
     public void ButtonUpdatedRhythm()
     {
         StateRhythm = !StateRhythm;
+        RhythmToggle.isOn = StateRhythm;
         UpdateButtonValues();
     }
     public void UpdateSliderValue()
@@ -63,7 +68,6 @@ public class UIManager : MonoBehaviour
     private void UpdateButtonValues()
     {
         _groupman.ButtonUpdatedValues(StateAura, StateRhythm, _SpeedAmp_Slider.value, _Brightness_Slider.value);
-        
     }
     // public void UpdateSliderValues()
     // {

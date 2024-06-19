@@ -44,7 +44,7 @@ public class GroupManager : MonoBehaviour
     public float averageCycleDuration;
     public float DirectionOrientationAngle;
     public float footsteptime = 0f;
-    public float _FootstepCurrentFreq = 2f;
+    public float _FootstepCurrentFreq = 0.5f;
     private bool twoplayersready = false;
 
     [Header("Not Sure if Needed Parameters")]
@@ -108,7 +108,7 @@ public class GroupManager : MonoBehaviour
 
     private void FootstepsAudio()
     {
-        if (PlayerTwoData.Speed > 50)
+        if (PlayerTwoData.Speed > 30)
         {
             if(m_LocalPlayerConroller.RhythmEnabled)
             {
