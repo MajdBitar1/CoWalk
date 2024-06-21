@@ -1,14 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Fusion;
-using Fusion.Editor;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.Rendering;
-
-using UnityEngine.Rendering.Universal;
-using Unity.Mathematics;
 
 
 // GroupManager is a class that manages the group of players, 
@@ -23,37 +13,29 @@ public class GroupManager : MonoBehaviour
 
     [Header("Input Data")]
     [SerializeField] PlayerController m_LocalPlayerConroller;
-    [SerializeField] NetworkPlayerInfo m_PlayerOneInfo;
-    [SerializeField] NetworkPlayerInfo m_PlayerTwoInfo;
     [SerializeField] PlayerFeedbackManager m_PlayerFeedbackManager;
-
-    [Header("Constants To Tune")]
-    [SerializeField] float modifyspeedminimumthreshold = 0.1f;
-
+    private NetworkPlayerInfo m_PlayerOneInfo;
+    private NetworkPlayerInfo m_PlayerTwoInfo;
     private PlayerMovementData PlayerOneData, PlayerTwoData;
 
-    [Header("Tuning Parameters")]
-    [SerializeField] float SafeSeparationZone = 30;
-    [SerializeField] float MaxSeparationZone = 150;
-    [SerializeField] float DirectionSeperationCosAngle = 0.7f;
+    //[SerializeField] float DirectionSeperationCosAngle = 0.7f;
 
 
     [Header("Debugging Information")]
-    public float separationDistance;
-    public float deltaSpeed;
-    public float averageCycleDuration;
-    public float DirectionOrientationAngle;
-    public float footsteptime = 0f;
     public float _FootstepCurrentFreq = 0.5f;
+    private float separationDistance;
+    private float deltaSpeed;
+    private float averageCycleDuration;
+    //private float DirectionOrientationAngle;
+    private float footsteptime = 0f;
     private bool twoplayersready = false;
 
-    [Header("Not Sure if Needed Parameters")]
-    public float averageSpeed;
-
+    [Header("Tuning Parameters")]
+    [SerializeField] float DistanceToCover = 1.5f;
+    //public float averageSpeed;
     private Vector3 CurrentPosition, PrevPosition;
-
     private float DistanceCovered = 0;
-    public float DistanceToCover = 10f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -62,8 +44,7 @@ public class GroupManager : MonoBehaviour
         PlayerTwoData = new PlayerMovementData(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0, 2);
         separationDistance = 0;
         deltaSpeed = 0;
-        averageSpeed = 0;
-        averageCycleDuration = 2;
+        averageCycleDuration = 1;
         CurrentPosition = new Vector3(0, 0, 0);
         PrevPosition = new Vector3(0, 0, 0);
     }
@@ -139,12 +120,11 @@ public class GroupManager : MonoBehaviour
     {
         separationDistance = SeparationDistance2D(PlayerOneData.Position,PlayerTwoData.Position);
         deltaSpeed = PlayerOneData.Speed - PlayerTwoData.Speed;
-
         averageCycleDuration = ComputeAverageFrequency(PlayerOneData.CycleDuration, PlayerTwoData.CycleDuration);
-        DirectionOrientationAngle = Vector3.Angle(PlayerOneData.Direction , PlayerTwoData.Direction);
+        //DirectionOrientationAngle = Vector3.Angle(PlayerOneData.Direction , PlayerTwoData.Direction);
 
         //not sure if needed
-        averageSpeed = (PlayerOneData.Speed + PlayerTwoData.Speed)/2;
+        //averageSpeed = (PlayerOneData.Speed + PlayerTwoData.Speed)/2;
     }
 
     private float ComputeAverageFrequency(float Frequency1, float Frequency2)

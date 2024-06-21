@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Fusion;
-using Unity.VisualScripting;
 using XPXR.Recorder.Models;
-using System.Text.RegularExpressions;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,23 +11,25 @@ public class PlayerController : MonoBehaviour
     private WalkingState _walkingstate;
 
     //Player Movement Variables
-
+    [Header("Player Object References")]
     [SerializeField] Armswing m_armswing;
     [SerializeField] ComputeArmRhythm m_armrhythm;
     [SerializeField] GameObject LeftHand, RightHand;
     [SerializeField] PlayerFeedbackManager playerFeedbackManager;
 
-    public float MAXVALUE = 10f;
-    private NetworkPlayerInfo m_NetworkPlayerInfo;
-    public CharacterController m_CharacterController;
-    private JukeBox m_Juekbox;
-    private Vector3 m_currentdirection;
-    public float PlayerSpeed;
+    [SerializeField] private float MAXVALUE = 10f;
     public float PlayerCycleDuration=2f;
     public float PlayerAverageSpeed = 0f;
+
+    private NetworkPlayerInfo m_NetworkPlayerInfo;
+    private CharacterController m_CharacterController;
+    private Vector3 m_currentdirection;
+    private float PlayerSpeed;
     private PlayerMovementData m_PlayerMoveData = new PlayerMovementData();
     private List<float> SpeedBuffer = new List<float>();
 
+
+    [Header("STATE VARIABLES")]
     //State Dependent Variables
     public bool isMoving;
     public bool RightLocked = false;
@@ -77,7 +76,6 @@ public class PlayerController : MonoBehaviour
     {
         m_NetworkPlayerInfo = GetComponentInParent<NetworkPlayerInfo>();
         m_CharacterController = GetComponentInParent<CharacterController>();
-        m_Juekbox = gameObject.transform.parent.GetComponentInChildren<JukeBox>();
         m_armswing.enabled = true;
         m_armrhythm.enabled = true;
     }
@@ -108,6 +106,10 @@ public class PlayerController : MonoBehaviour
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","PlayerSpeed", new QuantitativeValue(PlayerSpeed) );
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","CycleDuration", new QuantitativeValue(PlayerCycleDuration) );
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.WorldPosition,"PlayerPos","Posotion", new WorldPosition(transform.position,transform.rotation) );
+    }
+    private void FixedUpdate()
+    {
+        CheckUpdatesfromUI();
     }
     private void LateUpdate()
     {
@@ -189,7 +191,18 @@ public class PlayerController : MonoBehaviour
         playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-        playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
+        //playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
+        m_armrhythm.MinimumSwingChange = -0.001f * m_NetworkPlayerInfo.AuraBrightness;
+    }
+
+    private void CheckUpdatesfromUI()
+    {
+        m_armswing.UpdateAmplifier(m_NetworkPlayerInfo.SpeedAmplifier);
+        playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
+        playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
+        RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
+        //playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
+        m_armrhythm.MinimumSwingChange = -0.001f * m_NetworkPlayerInfo.AuraBrightness;
     }
     public PlayerMovementData GetPlayerMovementData()
     {

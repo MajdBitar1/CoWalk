@@ -30,6 +30,8 @@ public class NetworkPlayerInfo : NetworkBehaviour
         m_PlayerMoveData = new PlayerMovementData();
         Speed = 0;
         CycleDuration = 0f;
+        SpeedAmplifier = 0.25f;
+        AuraBrightness = 0.5f;
     }
 
 

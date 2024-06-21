@@ -11,22 +11,18 @@ public class ComputeArmRhythm : MonoBehaviour
     [SerializeField] float MinimumCycleDuration = 0.4f;
     [SerializeField] float MaxCycleDuration = 3f;
     [SerializeField] int BufferSize = 30;
-
-    [SerializeField] private float BroadcastTimeInvertal = 3f;
-    [SerializeField] private float GlobalTimer = 0f;
-    
-    // public List<float> RightCycleDuration = new List<float>();
-    // public List<float> LeftCycleDuration = new List<float>();
-
+    [SerializeField] private float BroadcastTimeInvertal = 1f;
+    [SerializeField] private float _DefaultCycleValue = 1f;
+    public float MinimumSwingChange = -0.1f;
+    private float GlobalTimer = 0f;
     private float totaldurationright, totaldurationleft;
     private int totalcountright, totalcountleft;
     private float _rightsum, _leftsum;
-    private bool _isMoving = false;
+    private float _prevrightsum ,_prevleftsum;
     private float averagecycleduration;
     private float ResetTimer = 0;
     private Queue<float> Right_Swing_Elevation_Buffer;
     private Queue<float> Left_Swing_Elevation_Buffer;
-    private float _prevrightsum ,_prevleftsum;
     private bool ActivateCycleRight, ActivateCycleLeft;
     private float temprightcycle, templeftcycle;
     // Start is called before the first frame update
@@ -57,7 +53,6 @@ public class ComputeArmRhythm : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
-        _isMoving = m_playercontroller.isMoving;
         ComputeRhythm();
     }
     private void ComputeRhythm()
@@ -93,7 +88,7 @@ public class ComputeArmRhythm : MonoBehaviour
         }
         Right_Swing_Elevation_Buffer.Enqueue(m_righthand.transform.localPosition.y);
         _rightsum += m_righthand.transform.localPosition.y;
-        if  (_rightsum - _prevrightsum < -0.1) 
+        if  (_rightsum - _prevrightsum < MinimumSwingChange) 
         {
             RightCycleChanged();
         }
@@ -107,7 +102,7 @@ public class ComputeArmRhythm : MonoBehaviour
         }
         Left_Swing_Elevation_Buffer.Enqueue(m_lefthand.transform.localPosition.y);
         _leftsum += m_lefthand.transform.localPosition.y;
-        if (_leftsum - _prevleftsum < -0.1)
+        if (_leftsum - _prevleftsum < -MinimumSwingChange)
         {
             LeftCycleChanged();
         }
@@ -188,7 +183,7 @@ public class ComputeArmRhythm : MonoBehaviour
 
         if (totalcountleft + totalcountright == 0)
         {
-            averagecycleduration = 2.5f;
+            averagecycleduration = _DefaultCycleValue;
         }
         else
         {
@@ -202,7 +197,6 @@ public class ComputeArmRhythm : MonoBehaviour
         //Reset the parameters and buffers
         ResetAfterBroadcast();
     }
-
 
     private void ResetAfterBroadcast()
     {
@@ -222,12 +216,6 @@ public class ComputeArmRhythm : MonoBehaviour
         averagecycleduration = 0;
         Right_Swing_Elevation_Buffer.Clear();
         Left_Swing_Elevation_Buffer.Clear();
-        // RightCycleDuration.Clear();
-        // LeftCycleDuration.Clear();
         ResetAfterBroadcast();
-    }
-    public float GetAverageCycleDuration()
-    {
-        return averagecycleduration;
     }
 }

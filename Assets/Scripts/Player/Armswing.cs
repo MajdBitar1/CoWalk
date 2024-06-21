@@ -24,10 +24,10 @@ public class Armswing : MonoBehaviour
     public PlayerMovementData _playermovementdata;
 
     [Header("Track These")]
-    [SerializeField] float playerspeed;
-    [SerializeField] float playerprevspeed;
-    [SerializeField] float LeftDistanceMoved = 0;
-    [SerializeField] float RightDistanceMoved = 0;
+    private float playerspeed;
+    private float playerprevspeed;
+    private float LeftDistanceMoved = 0;
+    private float RightDistanceMoved = 0;
 
 
     [Header("Constants")]
@@ -38,9 +38,6 @@ public class Armswing : MonoBehaviour
     [SerializeField] float MaximumPlayerSpeedThreshold = 20f;
     [SerializeField] float RotationDetectionThreshold = 0.98f;
     [SerializeField] float DifferenceHeadandDirection = 0.6f;
-    [SerializeField] float ReduceDistanceMoved = 1;
-    //[SerializeField] float maxheight = 0.7f;
-
 
     // Start is called before the first frame update
     void Start()
@@ -63,8 +60,6 @@ public class Armswing : MonoBehaviour
     {
         //Update Position
         PlayerCurrentPosition = transform.position;
-        float headheight = head.transform.localPosition.y;
-
         //Define Direction
         HeadDirection = head.gameObject.transform.forward.normalized;
         HipDirection = hips.gameObject.transform.forward.normalized;
@@ -73,12 +68,12 @@ public class Armswing : MonoBehaviour
         Vector3 NormalVec = Vector3.Cross(direction, Vector3.up).normalized;
         if (!LeftLocked)
         {
-            LeftDistanceMoved = ComputeLeftHandMovement(headheight,NormalVec);
+            LeftDistanceMoved = ComputeLeftHandMovement(NormalVec);
         }
 
         if  (!RightLocked)
         {
-            RightDistanceMoved = ComputeRightHandMovement(headheight,NormalVec);
+            RightDistanceMoved = ComputeRightHandMovement(NormalVec);
         }
 
         float playerDistanceMoved = Vector3.Distance(PlayerCurrentPosition, PlayerPreviousFramePosition);
@@ -127,26 +122,26 @@ public class Armswing : MonoBehaviour
     //TO DO
     //MAKE THEM ONE FUCITON WITH LEFTHAND OR RIGHTHAND AS INPUT, 
     //BUT THIS MAY CAUSE SOME PROBLEMS WITH VARIABLES, U CAN PASS A BOOL TO SPECIFY WHICH VARIALBES TO ACCESS IN AN 2D ARRAY.
-    private float ComputeLeftHandMovement(float headheight,Vector3 NormalVec)
+    private float ComputeLeftHandMovement(Vector3 NormalVec)
     {
         Vector3 DeltaLeftHand = lefthand.transform.position - prevPosLeft;
         Vector3 VeloLeftHand = DeltaLeftHand; // (Time.deltaTime * 100);
         //if (lefthand.transform.position.y > headheight * maxheight) VeloLeftHand = Vector3.zero;
         float LeftDistanceMoved = Mathf.Abs( Vector3.Dot(VeloLeftHand, direction));
         if ( Vector3.Dot(NormalVec, VeloLeftHand.normalized) >= 0.5) LeftDistanceMoved = 0;
-        LeftDistanceMoved = LeftDistanceMoved / (Time.deltaTime * ReduceDistanceMoved);	
+        LeftDistanceMoved = LeftDistanceMoved / Time.deltaTime;	
         if (LeftDistanceMoved < RequiredMovementThreshold) LeftDistanceMoved = 0;
         return LeftDistanceMoved;
     }
 
-    private float ComputeRightHandMovement(float headheight,Vector3 NormalVec)
+    private float ComputeRightHandMovement(Vector3 NormalVec)
     {
         Vector3 DeltaRightHand = righthand.transform.position - prevPosRight;
         Vector3 VeloRightHand = DeltaRightHand; // (Time.deltaTime * 100);
         //if (righthand.transform.position.y > headheight * maxheight) VeloRightHand = Vector3.zero;
         RightDistanceMoved = Mathf.Abs( Vector3.Dot(VeloRightHand, direction));
         if (Vector3.Dot(NormalVec, VeloRightHand.normalized) >= 0.5) RightDistanceMoved = 0;
-        RightDistanceMoved = RightDistanceMoved / (Time.deltaTime * ReduceDistanceMoved);
+        RightDistanceMoved = RightDistanceMoved / Time.deltaTime;
         if (RightDistanceMoved < RequiredMovementThreshold) RightDistanceMoved = 0;
         return RightDistanceMoved;
     }
