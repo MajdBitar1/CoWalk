@@ -116,7 +116,7 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
         {
             return;
         }
-        Debug.Log("XPXR.MetaAvatar-Fusion: Avatar value updated");
+        //Debug.Log("XPXR.MetaAvatar-Fusion: Avatar value updated");
         if (this._avatar is null)
         {
             this._avatar = base.GetComponentInChildren<SampleAvatarEntity>();

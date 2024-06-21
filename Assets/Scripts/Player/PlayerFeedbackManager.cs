@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [RequireComponent(typeof(PlayerController))]
 public class PlayerFeedbackManager : MonoBehaviour
@@ -8,6 +10,7 @@ public class PlayerFeedbackManager : MonoBehaviour
 
     [Header("Feedback Objects")]
     [SerializeField] GameObject m_AuraObj,m_StatsMenuObj,m_TuningMenuObj,m_InteractionObj;
+    [SerializeField] GameObject StaticRingEffect;
     [SerializeField] Material m_AuraMat;
     [SerializeField] GameObject LeftGestureLock, RightGestureLock;
 
@@ -15,13 +18,15 @@ public class PlayerFeedbackManager : MonoBehaviour
     [Header("Constants To Tune")]
     [SerializeField] float SafeSeparationZone = 5;
     [SerializeField] float MaxSeparationZone = 10;
+    [SerializeField] float PulsePeriodFactor = 10;
 
     private JukeBox RemoteFeedback;
     private PlayerController m_PlayerController;
     public bool _ShowMenu = false;
     private bool ToTheRight = false;
     private bool AuraBroken = false;
-    private int counter = 0;
+    private float counter = 0;
+    private VisualEffect m_AuraEffect;
 
     [Header("Feedback States")]
     public bool AuraEnabled = false;
@@ -42,12 +47,15 @@ public class PlayerFeedbackManager : MonoBehaviour
     {
         RemoteFeedback = GameManager.RemotePlayerObject.GetComponentInChildren<JukeBox>();
         m_AuraObj.gameObject.transform.parent = GameManager.RemotePlayerObject.gameObject.transform;
+        StaticRingEffect.gameObject.transform.parent = GameManager.RemotePlayerObject.gameObject.transform;
         m_AuraObj.gameObject.transform.localPosition = new Vector3(0, 2, 0);
+        StaticRingEffect.gameObject.transform.localPosition = new Vector3(0, 2, 0);
     }
 
     private void Start()
     {
         m_PlayerController = GetComponent<PlayerController>();
+        m_AuraEffect = m_AuraObj.GetComponent<VisualEffect>();
     }
 
 
@@ -67,94 +75,64 @@ public class PlayerFeedbackManager : MonoBehaviour
             GetRemoteFeedback();
         }
     }
-
+    
+    private bool ObjectInCameraView(GameObject obj)
+    {
+        Vector3 screenPoint = Camera.main.WorldToViewportPoint(obj.transform.position);
+        bool onScreen = screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+        return onScreen;
+    }
     public void Aura(float distance)
     {
         if (!AuraEnabled)
         {
-            m_AuraObj.SetActive(false);
+            StaticRingEffect.SetActive(false);
+            counter = 0;
             return;
         }
         //Normalize Distance relative to Min and Max Separation Zones, to Get a value which is Negative While in Safe zone, between safe and max the value will be between 0 and 1
         float value = Mathf.Min( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
         if (value > 0 && !AuraBroken)
         {
-            //if separation distance exceeds the max Zone, Aura will break
-            if (value >= 1f)
+            //Check if you can see the other player
+            bool inView = ObjectInCameraView(GameManager.RemotePlayerObject);
+            if (inView) 
             {
-                AuraBroken = true;
-                m_AuraObj.SetActive(false);
+                //if you can see other player, ripple effect will stop and a static ring will appear around the other player
+                counter = 0;
+                m_AuraEffect.Stop();
+                StaticRingEffect.SetActive(true);
                 return;
-            }   
-            float angle = 0;
-            //Decide the Direction of the Aura, Right or Left, based on the closest eye to the partner object.
-            float distancetoRight = Vector3.Distance(GameManager.RemotePlayerObject.transform.position, _RightEye.gameObject.transform.position);
-            float distancetoLeft = Vector3.Distance(GameManager.RemotePlayerObject.transform.position, _LeftEye.gameObject.transform.position);
-            if (distancetoRight < distancetoLeft)
-            {
-                ToTheRight = true;
             }
             else
             {
-                ToTheRight = false;
-            }
-            
-            //Initially the aura will fade in, until it reaches a certain value.
-            if (value <= 0.5f)
-            {
-                if (ToTheRight)
+                StaticRingEffect.SetActive(false);
+                m_AuraObj.gameObject.transform.localScale = new Vector3( 40 + value * 10f , 0f, 40 + value * 10f);
+                float pulseperiod = 1 / (value * PulsePeriodFactor);
+                //if separation distance exceeds the max Zone, Aura will break
+                if (value >= 1f)
                 {
-                    angle = 40 * value + 270;
+                    AuraBroken = true;
+                    return;
+                }   
+                if (counter == 0)
+                {
+                    m_AuraEffect.Play();
                 }
-                else
+                else if (counter >= pulseperiod)
                 {
-                    angle = -40 * value + 90;
-                }
-            }
-            else
-            {
-                if (ToTheRight)
-                {
-                    angle = 270;
-                }
-                else
-                {
-                    angle = 90;
-                }
-            }
-            m_AuraObj.gameObject.transform.rotation = Quaternion.Euler(0, angle , 0);
-
-            //At the end of separation, Aura will flicker
-            if (value > 0.60f)
-            {
-                if (counter > 0 && counter <= 40)
-                {
-                    //Debug.Log("[FEEDBACKMAN] Value: " + value + "Current Fade is LOW");
-                    m_AuraMat.SetFloat("_Fade", 0.5f);
-                }
-                else if (counter > 40 && counter <= 80)
-                {
-                    //Debug.Log("[FEEDBACKMAN] Value: " + value + "Current Fade is HIGH");
-                    m_AuraMat.SetFloat("_Fade", 1f);
-                }
-                else
-                {
+                    m_AuraEffect.Play();
                     counter = 0;
                 }
-                counter++;
+                counter += Time.deltaTime;
             }
-            else
-            {
-                m_AuraMat.SetFloat("_Fade", Aura_Brightness * 4f);
-            }
-
-            m_AuraObj.SetActive(true);
         }
         //IF AURA IS BROKEN, REUNION WITH PARTNER ACTIVATES IT AGAIN
         if (value <= 0)
         {
-            m_AuraObj.SetActive(false);
             AuraBroken = false;
+            StaticRingEffect.SetActive(false);
+            counter = 0;
         }
     }
     public void LockVisualState(bool Left, bool Right)
@@ -168,9 +146,8 @@ public class PlayerFeedbackManager : MonoBehaviour
         if (_ShowMenu)
         {
             m_InteractionObj.SetActive(true);
-            float angle = Mathf.Acos(Vector3.Dot(Camera.main.transform.forward.normalized, new Vector3 (0,0,1)));
-            angle = Mathf.Rad2Deg * angle;
-
+            // float angle = Mathf.Acos(Vector3.Dot(Camera.main.transform.forward.normalized, new Vector3 (0,0,1)));
+            // angle = Mathf.Rad2Deg * angle;
             m_StatsMenuObj.gameObject.transform.forward = Camera.main.transform.forward.normalized;
             m_StatsMenuObj.gameObject.transform.position = transform.position + Camera.main.transform.forward.normalized * 3  + new Vector3(0, 3f, 0);
 
