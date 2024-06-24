@@ -160,7 +160,7 @@ MonoBehaviour:
   sourceType: 0
   microphoneType: 0
   audioClip: {fileID: 0}
-  loopAudioClip: 1
+  loopAudioClip: 0
   recordingEnabled: 1
   audioSessionParameters:
     Category: 4

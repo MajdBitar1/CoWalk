@@ -1,22 +1,15 @@
-using Fusion;
-using Oculus.Interaction;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
 using UnityEngine;
-
+[RequireComponent(typeof(PlayerController))]
 public class Armswing : MonoBehaviour
 {
     /// <summary>
     /// Use the Character Controller to Implement Armswinging utilizing the XR Interaction toolkit
     /// </summary>
     [Header("Player Obj Ref")]
-    [SerializeField] GameObject lefthand;
-    [SerializeField] GameObject righthand;
-    [SerializeField] GameObject head;
-    [SerializeField] GameObject hips;
+    private GameObject _Lefthand;
+    private GameObject _RightHand;
+    [SerializeField] GameObject _Head;
+    [SerializeField] GameObject _Hips;
     [SerializeField] PlayerController _playercontroller;
     private Vector3 prevPosLeft, prevPosRight, prevHipDirection;
     private Vector3 direction, HipDirection,HeadDirection;
@@ -47,11 +40,13 @@ public class Armswing : MonoBehaviour
 
     public void InitializeSwinger()
     {
-        HipDirection = hips.gameObject.transform.forward.normalized;
-        HeadDirection = head.gameObject.transform.forward.normalized;
+        _Lefthand = _playercontroller.GetLeftHand();
+        _RightHand = _playercontroller.GetRightHand();
+        HipDirection = _Hips.gameObject.transform.forward.normalized;
+        HeadDirection = _Head.gameObject.transform.forward.normalized;
         PlayerPreviousFramePosition = transform.localPosition;
-        prevPosLeft = lefthand.transform.localPosition;
-        prevPosRight = righthand.transform.localPosition;
+        prevPosLeft = _Lefthand.transform.localPosition;
+        prevPosRight = _RightHand.transform.localPosition;
         prevHipDirection = HipDirection;
         playerspeed = 0;
     }
@@ -61,8 +56,8 @@ public class Armswing : MonoBehaviour
         //Update Position
         PlayerCurrentPosition = transform.position;
         //Define Direction
-        HeadDirection = head.gameObject.transform.forward.normalized;
-        HipDirection = hips.gameObject.transform.forward.normalized;
+        HeadDirection = _Head.gameObject.transform.forward.normalized;
+        HipDirection = _Hips.gameObject.transform.forward.normalized;
         direction = HipDirection;
 
         Vector3 NormalVec = Vector3.Cross(direction, Vector3.up).normalized;
@@ -110,8 +105,8 @@ public class Armswing : MonoBehaviour
         _playermovementdata = new PlayerMovementData(transform.position, direction, playerspeed, 1);
 
         //Setup parameters for next frame
-        prevPosLeft = lefthand.transform.position;
-        prevPosRight = righthand.transform.position;
+        prevPosLeft = _Lefthand.transform.position;
+        prevPosRight = _RightHand.transform.position;
         prevHipDirection = HipDirection;
         PlayerPreviousFramePosition = PlayerCurrentPosition;
         playerprevspeed = playerspeed;
@@ -124,7 +119,7 @@ public class Armswing : MonoBehaviour
     //BUT THIS MAY CAUSE SOME PROBLEMS WITH VARIABLES, U CAN PASS A BOOL TO SPECIFY WHICH VARIALBES TO ACCESS IN AN 2D ARRAY.
     private float ComputeLeftHandMovement(Vector3 NormalVec)
     {
-        Vector3 DeltaLeftHand = lefthand.transform.position - prevPosLeft;
+        Vector3 DeltaLeftHand = _Lefthand.transform.position - prevPosLeft;
         Vector3 VeloLeftHand = DeltaLeftHand; // (Time.deltaTime * 100);
         //if (lefthand.transform.position.y > headheight * maxheight) VeloLeftHand = Vector3.zero;
         float LeftDistanceMoved = Mathf.Abs( Vector3.Dot(VeloLeftHand, direction));
@@ -136,7 +131,7 @@ public class Armswing : MonoBehaviour
 
     private float ComputeRightHandMovement(Vector3 NormalVec)
     {
-        Vector3 DeltaRightHand = righthand.transform.position - prevPosRight;
+        Vector3 DeltaRightHand = _RightHand.transform.position - prevPosRight;
         Vector3 VeloRightHand = DeltaRightHand; // (Time.deltaTime * 100);
         //if (righthand.transform.position.y > headheight * maxheight) VeloRightHand = Vector3.zero;
         RightDistanceMoved = Mathf.Abs( Vector3.Dot(VeloRightHand, direction));

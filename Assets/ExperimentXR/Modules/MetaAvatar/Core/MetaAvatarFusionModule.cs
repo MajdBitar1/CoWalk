@@ -14,7 +14,6 @@ class MetaAvatarFusionModule : Fusion.Behaviour, INetworkRunnerCallbacks
     [Header("Use face and eye tracking for the Meta Avatar")]
     public bool FaceAndEyeTracking = true;
     //private GameObject _ovrRigCamera;
-
     private bool m_ModelLoaded = false;
     [SerializeField] private NetworkPrefabRef _playerPrefab;
 

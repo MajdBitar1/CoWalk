@@ -14,11 +14,11 @@ public class PlayerController : MonoBehaviour
     [Header("Player Object References")]
     [SerializeField] Armswing m_armswing;
     [SerializeField] ComputeArmRhythm m_armrhythm;
-    [SerializeField] GameObject LeftHand, RightHand;
     [SerializeField] PlayerFeedbackManager playerFeedbackManager;
+    [SerializeField] GameObject LeftHand, RightHand;
 
-    [SerializeField] private float MAXVALUE = 10f;
-    public float PlayerCycleDuration=2f;
+    [SerializeField] private float _MaxSwingMagnitudeAllowed = 10f;
+    public float PlayerCycleDuration=1f;
     public float PlayerAverageSpeed = 0f;
 
     private NetworkPlayerInfo m_NetworkPlayerInfo;
@@ -124,11 +124,13 @@ public class PlayerController : MonoBehaviour
         m_currentdirection = m_PlayerMoveData.Direction;
         PlayerSpeed = m_PlayerMoveData.Speed;
         Vector3 value = PlayerSpeed * Time.deltaTime * Vector3.ProjectOnPlane(m_currentdirection, Vector3.up);
-        if (value.magnitude > MAXVALUE)
+        if (value.magnitude > _MaxSwingMagnitudeAllowed)
         {
-            value = value.normalized * MAXVALUE * ( 1 + m_NetworkPlayerInfo.SpeedAmplifier);
+            value = value.normalized * _MaxSwingMagnitudeAllowed * ( 1 + m_NetworkPlayerInfo.SpeedAmplifier);
         }
-        m_CharacterController.SimpleMove( value ); // * Runner.DeltaTime
+
+        if (PlayerAverageSpeed > 50f)
+            m_CharacterController.SimpleMove( value ); // * Runner.DeltaTime
     }
     public void SetArmswing(bool state)
     {
@@ -192,7 +194,7 @@ public class PlayerController : MonoBehaviour
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         //playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
-        m_armrhythm.MinimumSwingChange = -0.001f * m_NetworkPlayerInfo.AuraBrightness;
+        m_armrhythm.MinimumSwingChange = -0.1f * m_NetworkPlayerInfo.AuraBrightness;
     }
 
     private void CheckUpdatesfromUI()
@@ -200,9 +202,11 @@ public class PlayerController : MonoBehaviour
         m_armswing.UpdateAmplifier(m_NetworkPlayerInfo.SpeedAmplifier);
         playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
+        playerFeedbackManager.AlignEnabled = m_NetworkPlayerInfo.AlignState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         //playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
-        m_armrhythm.MinimumSwingChange = -0.001f * m_NetworkPlayerInfo.AuraBrightness;
+        m_armrhythm.MinimumSwingChange = -0.1f * m_NetworkPlayerInfo.AuraBrightness;
+
     }
     public PlayerMovementData GetPlayerMovementData()
     {

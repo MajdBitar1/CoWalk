@@ -22,13 +22,14 @@ public class GroupManager : MonoBehaviour
 
 
     [Header("Debugging Information")]
-    public float _FootstepCurrentFreq = 0.5f;
+    public float _FootstepCurrentPeriod = 1f;
     private float separationDistance;
     private float deltaSpeed;
     private float averageCycleDuration;
     //private float DirectionOrientationAngle;
     private float footsteptime = 0f;
     private bool twoplayersready = false;
+    private bool m_AlignState = false;
 
     [Header("Tuning Parameters")]
     [SerializeField] float DistanceToCover = 1.5f;
@@ -40,8 +41,8 @@ public class GroupManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerOneData = new PlayerMovementData( new Vector3(0,0,0), new Vector3(0, 0, 0), 0, 2);
-        PlayerTwoData = new PlayerMovementData(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0, 2);
+        PlayerOneData = new PlayerMovementData( new Vector3(0,0,0), new Vector3(0, 0, 0), 0, 1);
+        PlayerTwoData = new PlayerMovementData(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0, 1);
         separationDistance = 0;
         deltaSpeed = 0;
         averageCycleDuration = 1;
@@ -81,7 +82,6 @@ public class GroupManager : MonoBehaviour
             PlayerOneData = m_PlayerOneInfo.GetData();
             PlayerTwoData = m_PlayerTwoInfo.GetData();
             UpdateGroupParameters();
-            ProvideFeedback();
             FootstepsAudio();
         }
     }
@@ -89,31 +89,30 @@ public class GroupManager : MonoBehaviour
 
     private void FootstepsAudio()
     {
-        if (PlayerTwoData.Speed > 30)
+        if (PlayerTwoData.Speed > 100)
         {
             if(m_LocalPlayerConroller.RhythmEnabled)
             {
                 footsteptime += Time.deltaTime;
-                if (footsteptime >= _FootstepCurrentFreq)
+                if (footsteptime >= _FootstepCurrentPeriod)
                 {
-                m_PlayerFeedbackManager.PlayRemoteFootstepSound();
-                footsteptime = 0;
-                _FootstepCurrentFreq = averageCycleDuration;
+                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(separationDistance);
+                    footsteptime = 0;
+                    _FootstepCurrentPeriod = averageCycleDuration;
                 }
             }
             else
             {
                 CurrentPosition = PlayerTwoData.Position;
                 DistanceCovered += Vector3.Distance(CurrentPosition, PrevPosition);
-                Debug.Log("Distance Covered: " + DistanceCovered);
+                //Debug.Log("Distance Covered: " + DistanceCovered);
                 if (DistanceCovered > DistanceToCover)
                 {
-                    m_PlayerFeedbackManager.PlayRemoteFootstepSound();
+                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(separationDistance);
                     DistanceCovered = 0;
                 }
                 PrevPosition = CurrentPosition;
             }
-
         }
     }
     private void UpdateGroupParameters()
@@ -139,20 +138,6 @@ public class GroupManager : MonoBehaviour
         return Vector3.Distance(FirstPosition, SecondPosition);
     }
 
-
-    private void ProvideFeedback()
-    {
-        //AURA
-        SeparationDistanceThresholding(separationDistance);
-        //Rhythm Broadcasting
-        //UpdateStepFrequency();
-    }
-
-    private void SeparationDistanceThresholding(float distance)
-    {
-        m_PlayerFeedbackManager.Aura(distance);
-    }
-
     public UIData PassUIData()
     {
         UIData data = new UIData();
@@ -164,12 +149,14 @@ public class GroupManager : MonoBehaviour
         return data;
     }
 
-    public void ButtonUpdatedValues(bool AuraState,bool RhythmState, float SpeedAmpValue, float BrightnessValue)
+    public void ButtonUpdatedValues(bool AuraState,bool RhythmState, float SpeedAmpValue, float BrightnessValue, bool AlignState)
     {
         if(m_PlayerOneInfo == null || m_PlayerTwoInfo == null)
         {
             return;
         }
+        m_AlignState = AlignState;  
+
         m_PlayerOneInfo.RPC_Update_AuraState(AuraState);
         m_PlayerTwoInfo.RPC_Update_AuraState(AuraState);
 
@@ -181,6 +168,9 @@ public class GroupManager : MonoBehaviour
 
         m_PlayerOneInfo.RPC_Update_Brightness(BrightnessValue);
         m_PlayerTwoInfo.RPC_Update_Brightness(BrightnessValue);
+
+        m_PlayerOneInfo.RPC_Update_AlignState(AlignState);
+        m_PlayerTwoInfo.RPC_Update_AlignState(AlignState);
         OnUIUpdated();
     }
     // public void SliderUpdatedValues()

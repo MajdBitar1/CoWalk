@@ -23,13 +23,16 @@ public class NetworkPlayerInfo : NetworkBehaviour
     [Networked]
     public bool RhythmState { get; set; }   
 
+    [Networked]
+    public bool AlignState { get; set; }
+
     private PlayerMovementData m_PlayerMoveData ;
 
     void Start()
     {
         m_PlayerMoveData = new PlayerMovementData();
         Speed = 0;
-        CycleDuration = 0f;
+        CycleDuration = 1f;
         SpeedAmplifier = 0.25f;
         AuraBrightness = 0.5f;
     }
@@ -73,6 +76,12 @@ public class NetworkPlayerInfo : NetworkBehaviour
     public void RPC_Update_Brightness(float value)
     {
         AuraBrightness = value;
+    }
+
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_AlignState(bool state)
+    {
+        AlignState = state;
     }
 
 
