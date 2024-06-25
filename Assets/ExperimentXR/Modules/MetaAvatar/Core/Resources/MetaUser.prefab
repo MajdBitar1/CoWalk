@@ -202,6 +202,7 @@ MonoBehaviour:
   _AuraBrightness: 0
   _AuraState: 0
   _RhythmState: 0
+  _AlignState: 0
 --- !u!1001 &1959709278020435916
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -280,6 +281,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9130601300887950552, guid: b817984112ef22547ac06fad27b48013, type: 3}
       propertyPath: MinDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9130601300887950552, guid: b817984112ef22547ac06fad27b48013, type: 3}
+      propertyPath: rolloffMode
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

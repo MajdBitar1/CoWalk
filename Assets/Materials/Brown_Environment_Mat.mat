@@ -18,6 +18,7 @@ Material:
   - _DISABLE_ALBEDO_MAP
   - _EDGE_SMOOTHING_AUTOMATIC
   - _GRADIENT_FOUR_POINT
+  - _METALLIC_TEXTURE_ALBEDO_CHANNEL_A
   - _NORMAL_MAP
   - _RIM_LIGHT
   - _USE_WORLD_SCALE
@@ -87,7 +88,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlbedoAlphaMode: 0
+    - _AlbedoAlphaMode: 1
     - _AlbedoAlphaSmoothness: 0
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
