@@ -7,7 +7,7 @@ using UnityEngine.VFX;
 public class PlayerFeedbackManager : MonoBehaviour
 {
     [Header("Feedback Objects")]
-    [SerializeField] GameObject m_AuraObj,m_StatsMenuObj,m_TuningMenuObj,LeftGestureLock, RightGestureLock;
+    [SerializeField] GameObject m_AuraObj,m_StatsMenuObj,m_TuningMenuObj,m_InteractionObj,LeftGestureLock, RightGestureLock;
 
     [Header("Constants To Tune")]
     [SerializeField] float SafeSeparationZone = 5;
@@ -23,6 +23,7 @@ public class PlayerFeedbackManager : MonoBehaviour
     public bool RhythmEnabled = false;
     public bool AlignEnabled = false;
     public bool _ShowMenu = false;
+    private bool inView = false;
 
     private void OnEnable()
     {
@@ -42,6 +43,11 @@ public class PlayerFeedbackManager : MonoBehaviour
     private void Start()
     {
         m_AuraEffect = m_AuraObj.GetComponent<VisualEffect>();
+    }
+
+    private void Update()
+    {
+        inView = ObjectInCameraView(GameManager.RemotePlayerObject);
     }
 
     public void PlayRemoteFootstepSound(float value)
@@ -82,10 +88,9 @@ public class PlayerFeedbackManager : MonoBehaviour
             if (value > 0)
             {
                 //Check if you can see the other player
-                bool inView = ObjectInCameraView(GameManager.RemotePlayerObject);
                 if (inView) 
                 {
-                    //if you can see other player, ripple effect will stop and a static ring will appear around the other player
+                    //if you can see other player, ripple effect will stop
                     counter = 0;
                     m_AuraEffect.Stop();
                     return;
@@ -121,8 +126,17 @@ public class PlayerFeedbackManager : MonoBehaviour
         if (value <= 0)
         {
             AuraBroken = false;
+
+            if (inView) 
+            {
+                //if you can see other player, ripple effect will stop
+                counter = 0;
+                m_AuraEffect.Stop();
+                return;
+            }
+
             m_AuraObj.gameObject.transform.localScale = new Vector3( SafeSeparationZone + 2 + value * MaxSeparationZone , 0f, SafeSeparationZone + 2 + value * MaxSeparationZone);
-            m_AuraEffect.SetVector4("Color", Color.white);
+            m_AuraEffect.SetVector4("Color", Color.white );
             //Independent of Steps, Aura will pulse
             float pulseperiod = 1 / PulsePeriodFactor;
             PulseAlignment(pulseperiod);     
@@ -159,6 +173,7 @@ public class PlayerFeedbackManager : MonoBehaviour
         _ShowMenu = !_ShowMenu;
         if (_ShowMenu)
         {
+            m_InteractionObj.SetActive(true);
             m_StatsMenuObj.gameObject.transform.forward = Camera.main.transform.forward.normalized;
             m_StatsMenuObj.gameObject.transform.position = transform.position + Camera.main.transform.forward.normalized * 3  + new Vector3(0, 3f, 0);
 
@@ -172,6 +187,7 @@ public class PlayerFeedbackManager : MonoBehaviour
         {
             m_StatsMenuObj.SetActive(false);
             m_TuningMenuObj.SetActive(false);
+            m_InteractionObj.SetActive(false);
         }
     }
 

@@ -5,9 +5,6 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] GroupManager _groupman;
-    //[SerializeField] Armswing _armswing;
-
-
 
     [Header("UI Elements")]
     //[SerializeField] TextMeshProUGUI ASstateValue;
