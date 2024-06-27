@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.Splines;
 using Unity.Mathematics;
-using Fusion;
-using System.ComponentModel;
 
 public class GestureRecognizer : MonoBehaviour
 {

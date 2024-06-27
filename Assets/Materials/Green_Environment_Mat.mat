@@ -12,13 +12,14 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _BORDER_LIGHT
-  - _BORDER_LIGHT_USES_GRADIENT
+  - _BORDER_LIGHT_USES_COLOR
   - _DIRECTIONAL_LIGHT
   - _DISABLE_ALBEDO_MAP
   - _GRADIENT_FOUR_POINT
-  - _METALLIC_TEXTURE_ALBEDO_CHANNEL_A
+  - _RIM_LIGHT
+  - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   - _SPECULAR_HIGHLIGHTS
+  - _SPHERICAL_HARMONICS
   - _USE_WORLD_SCALE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -86,7 +87,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlbedoAlphaMode: 1
+    - _AlbedoAlphaMode: 2
     - _AlbedoAlphaSmoothness: 0
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
@@ -94,17 +95,17 @@ Material:
     - _BlurBorderIntensity: 0
     - _BlurMode: 0
     - _BlurTextureIntensity: 1
-    - _BorderColorMode: 3
-    - _BorderLight: 1
+    - _BorderColorMode: 2
+    - _BorderLight: 0
     - _BorderLightOpaque: 0
     - _BorderLightOpaqueAlpha: 1
     - _BorderLightReplacesAlbedo: 0
     - _BorderLightUsesHoverColor: 1
-    - _BorderMinValue: 0.298
+    - _BorderMinValue: 0.148
     - _BorderWidth: 10
     - _BumpScale: 1
     - _ClippingBorder: 0
-    - _ClippingBorderWidth: 0.025
+    - _ClippingBorderWidth: 0
     - _ClippingPlane: 0
     - _ClippingPlaneBorder: 0
     - _ClippingPlaneBorderWidth: 0.025
@@ -132,14 +133,14 @@ Material:
     - _EnvironmentColorThreshold: 1.5
     - _EnvironmentColoring: 0
     - _Fade: 1
-    - _FadeBeginDistance: 0.85
-    - _FadeCompleteDistance: 0.5
-    - _FadeMinValue: 0
-    - _FluentLightIntensity: 0.3
+    - _FadeBeginDistance: 6.46
+    - _FadeCompleteDistance: 4.3
+    - _FadeMinValue: 0.664
+    - _FluentLightIntensity: 0.252
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _GradientAngle: 180
+    - _GradientAngle: 178
     - _GradientMode: 2
     - _HoverLight: 0
     - _HoverLightOpaque: 0
@@ -149,11 +150,11 @@ Material:
     - _InnerGlowPower: 6.06
     - _InstancedColor: 0
     - _Iridescence: 0
-    - _IridescenceAngle: -0.78
-    - _IridescenceIntensity: 0.5
-    - _IridescenceThreshold: 0.05
-    - _Metallic: 0
-    - _MipmapBias: -2
+    - _IridescenceAngle: -0.21
+    - _IridescenceIntensity: 0.336
+    - _IridescenceThreshold: 0.139
+    - _Metallic: 0.517
+    - _MipmapBias: -2.23
     - _Mode: 0
     - _NearLightFade: 0
     - _NearPlaneFade: 0
@@ -165,18 +166,18 @@ Material:
     - _ProximityLightTwoSided: 0
     - _Reflections: 0
     - _Refraction: 0
-    - _RefractiveIndex: 1.1
+    - _RefractiveIndex: 2.2
     - _RenderQueueOverride: -1
-    - _RimLight: 0
-    - _RimPower: 0.25
+    - _RimLight: 1
+    - _RimPower: 2.5
     - _RoundCornerMargin: 0
     - _RoundCornerRadius: 0.25
     - _RoundCorners: 0
     - _RoundCornersHideInterior: 0
-    - _Smoothness: 0.2
+    - _Smoothness: 0.477
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SphericalHarmonics: 0
+    - _SphericalHarmonics: 1
     - _SrcBlend: 1
     - _Stencil: 0
     - _StencilComparison: 0
@@ -197,29 +198,29 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BlurBackgroundRect: {r: 0, g: 0, b: 1, a: 1}
-    - _BorderColor: {r: 0.5943396, g: 0.52958524, b: 0, a: 0}
+    - _BorderColor: {r: 1, g: 0.06392133, b: 0, a: 0}
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
-    - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
+    - _ClippingBorderColor: {r: 1, g: 0.20000002, b: 0, a: 1}
     - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.14187077, g: 0.8773585, b: 0, a: 1}
+    - _Color: {r: 0.06821643, g: 0.5396226, b: 0.20686533, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissiveColor: {r: 0.09670424, g: 0.4264151, b: 0.008850115, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
     - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
     - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
     - _GradientAlpha: {r: 1, g: 1, b: 1, a: 1}
     - _GradientAlphaTime: {r: 0, g: 0, b: 0, a: 0}
     - _GradientColor0: {r: 0.631373, g: 0.631373, b: 0.631373, a: 0}
-    - _GradientColor1: {r: 0.5544678, g: 0.990566, b: 0.1728818, a: 0.25}
-    - _GradientColor2: {r: 0.79755825, g: 1, b: 0.19339621, a: 0.5}
-    - _GradientColor3: {r: 0.9807911, g: 1, b: 0.2028302, a: 1}
-    - _GradientColor4: {r: 0.016648084, g: 0.7075472, b: 0, a: 1}
+    - _GradientColor1: {r: 0.41908988, g: 0.6679245, b: 0, a: 1}
+    - _GradientColor2: {r: 0.32003593, g: 0.645283, b: 0, a: 1}
+    - _GradientColor3: {r: 0.0043015834, g: 0.4792453, b: 0, a: 1}
+    - _GradientColor4: {r: 0.06271933, g: 0.5018867, b: 0, a: 1}
     - _HoverColorOpaqueOverride: {r: 1, g: 1, b: 1, a: 1}
     - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
     - _InnerGlowColor: {r: 1, g: 0.8153982, b: 0, a: 0.75}
     - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
     - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
     - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
-    - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _RimColor: {r: 0.31551564, g: 0.5188679, b: 0.002447496, a: 1}
     - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   m_BuildTextureStacks: []

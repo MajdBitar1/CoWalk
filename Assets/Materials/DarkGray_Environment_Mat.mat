@@ -17,9 +17,8 @@ Material:
   - _DIRECTIONAL_LIGHT
   - _DISABLE_ALBEDO_MAP
   - _EDGE_SMOOTHING_AUTOMATIC
-  - _METALLIC_TEXTURE_ALBEDO_CHANNEL_A
-  - _RIM_LIGHT
   - _SPECULAR_HIGHLIGHTS
+  - _SPHERICAL_HARMONICS
   - _USE_WORLD_SCALE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -67,7 +66,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 5, y: 5}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -87,7 +86,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlbedoAlphaMode: 1
+    - _AlbedoAlphaMode: 0
     - _AlbedoAlphaSmoothness: 0
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
@@ -147,13 +146,13 @@ Material:
     - _IgnoreZScale: 0
     - _IndependentCorners: 0
     - _InnerGlow: 0
-    - _InnerGlowPower: 14.6
+    - _InnerGlowPower: 15.7
     - _InstancedColor: 0
     - _Iridescence: 0
     - _IridescenceAngle: -0.78
     - _IridescenceIntensity: 0.5
     - _IridescenceThreshold: 0.05
-    - _Metallic: 0.429
+    - _Metallic: 0.844
     - _MipmapBias: -2
     - _Mode: 0
     - _NearLightFade: 0
@@ -168,16 +167,16 @@ Material:
     - _Refraction: 0
     - _RefractiveIndex: 1.1
     - _RenderQueueOverride: -1
-    - _RimLight: 1
+    - _RimLight: 0
     - _RimPower: 0.57
     - _RoundCornerMargin: 0
     - _RoundCornerRadius: 0.25
     - _RoundCorners: 0
     - _RoundCornersHideInterior: 0
-    - _Smoothness: 0.295
+    - _Smoothness: 0.319
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SphericalHarmonics: 0
+    - _SphericalHarmonics: 1
     - _SrcBlend: 1
     - _Stencil: 0
     - _StencilComparison: 0
@@ -202,7 +201,7 @@ Material:
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
     - _ClippingBorderColor: {r: 1, g: 0.20000002, b: 0, a: 1}
     - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.24110003, g: 0.3322368, b: 0.3962264, a: 1}
+    - _Color: {r: 0.3886792, g: 0.36301172, b: 0.36301172, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
@@ -217,7 +216,7 @@ Material:
     - _GradientColor4: {r: 0.7735849, g: 0.34785843, b: 0, a: 1}
     - _HoverColorOpaqueOverride: {r: 1, g: 1, b: 1, a: 1}
     - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
-    - _InnerGlowColor: {r: 1, g: 0.41951597, b: 0, a: 0.75}
+    - _InnerGlowColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 0.75}
     - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
     - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
     - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}

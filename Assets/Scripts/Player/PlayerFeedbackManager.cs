@@ -106,18 +106,20 @@ public class PlayerFeedbackManager : MonoBehaviour
                     }   
 
                     // First Scale up based on separation distance, this will ensure that the other player will see ripple effect even at high separation
-                    m_AuraObj.gameObject.transform.localScale = new Vector3( 20 + value * 15f , 0f, 20 + value * 15f);
+                    m_AuraObj.gameObject.transform.localScale = new Vector3( SafeSeparationZone + 3 + value * MaxSeparationZone , 0f, SafeSeparationZone + 3 + value * MaxSeparationZone); 
+                    //Vector3( 20 + value * 15f , 0f, 20 + value * 15f);
                     
                     //Second is find value of period (1/frequency) of ripples, this period will decrease (frequency increase) as the separation distance increases
                     float pulseperiod = Mathf.Min( 0.8f, 1 / (value * PulsePeriodFactor) );
 
                     //Third is to change the color of the ripples, this will be a gradient from yellow to red
-                    Color ColorOnGrad = Color.Lerp(Color.yellow, Color.red , value); // Color(1,0.647f,0,1) is Orange (255,165,0)
+                    Color ColorOnGrad = Color.Lerp( Color.yellow , Color.red , value); // Color(1,0.647f,0,1) is Orange (255,165,0)
                     m_AuraEffect.SetVector4("Color", ColorOnGrad);
 
                     //Pass the period inorder to play pulses based on it
                     //This will also decide it Alignment is on, to play pulses on every step
-                    PulseAlignment(pulseperiod);
+                    m_AuraEffect.Play();
+                    //PulseAlignment(pulseperiod);
                 }
             }
         }
@@ -139,7 +141,8 @@ public class PlayerFeedbackManager : MonoBehaviour
             m_AuraEffect.SetVector4("Color", Color.white );
             //Independent of Steps, Aura will pulse
             float pulseperiod = 1 / PulsePeriodFactor;
-            PulseAlignment(pulseperiod);     
+            m_AuraEffect.Play();
+            //PulseAlignment(pulseperiod);     
         }
     }
 

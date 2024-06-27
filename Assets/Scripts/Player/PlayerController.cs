@@ -34,10 +34,6 @@ public class PlayerController : MonoBehaviour
     public bool isMoving;
     public bool RightLocked = false;
     public bool LeftLocked = false;
-    public bool IsPointingLeft = false;
-    public bool IsPointingRight = false;
-    public bool ReleasedLeftPointing = false;
-    public bool ReleasedRightPointing = false;
     public bool RhythmEnabled = false;
 
     [Header("CHEATS")]
@@ -124,12 +120,12 @@ public class PlayerController : MonoBehaviour
         m_currentdirection = m_PlayerMoveData.Direction;
         PlayerSpeed = m_PlayerMoveData.Speed;
         Vector3 value = PlayerSpeed * Time.deltaTime * Vector3.ProjectOnPlane(m_currentdirection, Vector3.up);
-        if (value.magnitude > _MaxSwingMagnitudeAllowed)
+        if (value.magnitude > _MaxSwingMagnitudeAllowed * ( 1 + m_NetworkPlayerInfo.SpeedAmplifier) )
         {
             value = value.normalized * _MaxSwingMagnitudeAllowed * ( 1 + m_NetworkPlayerInfo.SpeedAmplifier);
         }
 
-        if (PlayerAverageSpeed > 50f)
+        if (PlayerAverageSpeed > 100f)
             m_CharacterController.SimpleMove( value ); // * Runner.DeltaTime
     }
     public void SetArmswing(bool state)
@@ -193,7 +189,6 @@ public class PlayerController : MonoBehaviour
         playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-        //playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
         m_armrhythm.MinimumSwingChange = -0.1f * m_NetworkPlayerInfo.AuraBrightness;
     }
 
@@ -204,7 +199,6 @@ public class PlayerController : MonoBehaviour
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         playerFeedbackManager.AlignEnabled = m_NetworkPlayerInfo.AlignState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-        //playerFeedbackManager.Aura_Brightness = m_NetworkPlayerInfo.AuraBrightness;
         m_armrhythm.MinimumSwingChange = -0.1f * m_NetworkPlayerInfo.AuraBrightness;
 
     }

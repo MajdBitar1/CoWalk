@@ -15,8 +15,6 @@ Material:
   - _BORDER_LIGHT_USES_GRADIENT
   - _DIRECTIONAL_LIGHT
   - _DISABLE_ALBEDO_MAP
-  - _GRADIENT_FOUR_POINT
-  - _METALLIC_TEXTURE_ALBEDO_CHANNEL_A
   - _SPECULAR_HIGHLIGHTS
   - _SPHERICAL_HARMONICS
   - _USE_WORLD_SCALE
@@ -86,7 +84,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlbedoAlphaMode: 1
+    - _AlbedoAlphaMode: 0
     - _AlbedoAlphaSmoothness: 0
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
@@ -140,7 +138,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _GradientAngle: 180
-    - _GradientMode: 2
+    - _GradientMode: 0
     - _HoverLight: 0
     - _HoverLightOpaque: 0
     - _IgnoreZScale: 0
@@ -152,7 +150,7 @@ Material:
     - _IridescenceAngle: -0.78
     - _IridescenceIntensity: 0.5
     - _IridescenceThreshold: 0.05
-    - _Metallic: 0.584
+    - _Metallic: 0.5
     - _MipmapBias: -2
     - _Mode: 0
     - _NearLightFade: 0
@@ -173,7 +171,7 @@ Material:
     - _RoundCornerRadius: 0.25
     - _RoundCorners: 0
     - _RoundCornersHideInterior: 0
-    - _Smoothness: 0
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SphericalHarmonics: 1
@@ -201,7 +199,7 @@ Material:
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
     - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.745283, g: 0.3609849, b: 0.20038268, a: 1}
+    - _Color: {r: 0.7433963, g: 0.2508802, b: 0.021039391, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
