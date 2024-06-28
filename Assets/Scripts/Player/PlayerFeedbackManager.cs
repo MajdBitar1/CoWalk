@@ -12,10 +12,10 @@ public class PlayerFeedbackManager : MonoBehaviour
     [Header("Constants To Tune")]
     [SerializeField] float SafeSeparationZone = 5;
     [SerializeField] float MaxSeparationZone = 10;
-    [SerializeField] float PulsePeriodFactor = 10;
+    [SerializeField] float StartingValue = 9;
+    [SerializeField] float AdditionalValue = 1;
     private JukeBox RemoteFeedback;
     private bool AuraBroken = false;
-    private float counter = 0;
     private VisualEffect m_AuraEffect;
 
     [Header("Feedback States")]
@@ -24,6 +24,7 @@ public class PlayerFeedbackManager : MonoBehaviour
     public bool AlignEnabled = false;
     public bool _ShowMenu = false;
     private bool inView = false;
+    public int OneOfTheLocksIsOn = 0;
 
     private void OnEnable()
     {
@@ -37,7 +38,7 @@ public class PlayerFeedbackManager : MonoBehaviour
     {
         RemoteFeedback = GameManager.RemotePlayerObject.GetComponentInChildren<JukeBox>();
         m_AuraObj.gameObject.transform.parent = GameManager.RemotePlayerObject.gameObject.transform.FindChildRecursive("AllLOD");
-        m_AuraObj.gameObject.transform.localPosition = new Vector3(0, 0.001f, 0);
+        m_AuraObj.gameObject.transform.localPosition = new Vector3(0, 0.01f, 0);
     }
 
     private void Start()
@@ -49,7 +50,7 @@ public class PlayerFeedbackManager : MonoBehaviour
     {
         inView = ObjectInCameraView(GameManager.RemotePlayerObject);
     }
-
+    
     public void PlayRemoteFootstepSound(float value)
     {
         if(RemoteFeedback != null)
@@ -77,7 +78,6 @@ public class PlayerFeedbackManager : MonoBehaviour
     {
         if (!AuraEnabled)
         {
-            counter = 0;
             return;
         }
         //Normalize Distance relative to Min and Max Separation Zones, to Get a value which is Negative While in Safe zone, between safe and max the value will be between 0 and 1
@@ -91,7 +91,6 @@ public class PlayerFeedbackManager : MonoBehaviour
                 if (inView) 
                 {
                     //if you can see other player, ripple effect will stop
-                    counter = 0;
                     m_AuraEffect.Stop();
                     return;
                 }
@@ -106,14 +105,11 @@ public class PlayerFeedbackManager : MonoBehaviour
                     }   
 
                     // First Scale up based on separation distance, this will ensure that the other player will see ripple effect even at high separation
-                    m_AuraObj.gameObject.transform.localScale = new Vector3( SafeSeparationZone + 3 + value * MaxSeparationZone , 0f, SafeSeparationZone + 3 + value * MaxSeparationZone); 
+                    m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + AdditionalValue + value * MaxSeparationZone , 0f, StartingValue + AdditionalValue + value * MaxSeparationZone); 
                     //Vector3( 20 + value * 15f , 0f, 20 + value * 15f);
                     
-                    //Second is find value of period (1/frequency) of ripples, this period will decrease (frequency increase) as the separation distance increases
-                    float pulseperiod = Mathf.Min( 0.8f, 1 / (value * PulsePeriodFactor) );
-
                     //Third is to change the color of the ripples, this will be a gradient from yellow to red
-                    Color ColorOnGrad = Color.Lerp( Color.yellow , Color.red , value); // Color(1,0.647f,0,1) is Orange (255,165,0)
+                    Color ColorOnGrad = Color.Lerp( new Color(1,0.74f,0,1) , Color.red , value); // Color(1,0.647f,0,1) is Orange (255,165,0)
                     m_AuraEffect.SetVector4("Color", ColorOnGrad);
 
                     //Pass the period inorder to play pulses based on it
@@ -132,44 +128,29 @@ public class PlayerFeedbackManager : MonoBehaviour
             if (inView) 
             {
                 //if you can see other player, ripple effect will stop
-                counter = 0;
                 m_AuraEffect.Stop();
                 return;
             }
 
-            m_AuraObj.gameObject.transform.localScale = new Vector3( SafeSeparationZone + 2 + value * MaxSeparationZone , 0f, SafeSeparationZone + 2 + value * MaxSeparationZone);
+            m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + value * MaxSeparationZone , 0f, StartingValue  + value * MaxSeparationZone);
             m_AuraEffect.SetVector4("Color", Color.white );
             //Independent of Steps, Aura will pulse
-            float pulseperiod = 1 / PulsePeriodFactor;
             m_AuraEffect.Play();
-            //PulseAlignment(pulseperiod);     
         }
     }
 
-    private void PulseAlignment(float pulseperiod)
-    {
-        if (AlignEnabled)
-        {
-            m_AuraEffect.Play();
-        }
-        else
-        {
-            if (counter == 0)
-            {
-                m_AuraEffect.Play();
-            }
-            else if (counter >= pulseperiod)
-            {
-                m_AuraEffect.Play();
-                counter = 0;
-            }
-            counter += Time.deltaTime;
-        }
-    }
     public void LockVisualState(bool Left, bool Right)
     {
         LeftGestureLock.SetActive(Left);
         RightGestureLock.SetActive(Right);
+        if (Left || Right)
+        {
+            OneOfTheLocksIsOn = 1;
+        }
+        else 
+        {
+            OneOfTheLocksIsOn = 0;
+        }
     }
     public void ShowMenu()
     {
@@ -194,4 +175,42 @@ public class PlayerFeedbackManager : MonoBehaviour
         }
     }
 
+    public int AuraStatus()
+    {
+        if (AuraBroken)
+        {
+            return -1;
+        }
+        else if (AuraEnabled)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public int RhythmStatus()
+    {
+        if (RhythmEnabled)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public int InViewStatus()
+    {
+        if (inView)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 }

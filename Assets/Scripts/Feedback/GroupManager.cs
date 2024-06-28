@@ -7,25 +7,23 @@ using UnityEngine;
 // for each player so that they can adjust their movement accordingly and receive proper feedback based on other player's actions.
 public class GroupManager : MonoBehaviour
 {
-
+    public delegate void PlayersReady();
+    public static event PlayersReady OnPlayersReady;
     public delegate void UIUpdated();
     public static event UIUpdated OnUIUpdated;
 
     [Header("Input Data")]
     [SerializeField] PlayerController m_LocalPlayerConroller;
     [SerializeField] PlayerFeedbackManager m_PlayerFeedbackManager;
-    private NetworkPlayerInfo m_PlayerOneInfo;
-    private NetworkPlayerInfo m_PlayerTwoInfo;
+    private NetworkPlayerInfo m_NetworkPlayerOneInfo;
+    private NetworkPlayerInfo m_NetworkPlayerTwoInfo;
     private PlayerMovementData PlayerOneData, PlayerTwoData;
-
-    //[SerializeField] float DirectionSeperationCosAngle = 0.7f;
-
 
     [Header("Debugging Information")]
     public float _FootstepCurrentPeriod = 1f;
-    private float separationDistance;
-    private float deltaSpeed;
-    private float averageCycleDuration;
+    private float _SeparationDistance;
+    private float _DeltaSpeed;
+    private float _AverageCycleForBoth;
     //private float DirectionOrientationAngle;
     private float footsteptime = 0f;
     private bool twoplayersready = false;
@@ -43,9 +41,9 @@ public class GroupManager : MonoBehaviour
     {
         PlayerOneData = new PlayerMovementData( new Vector3(0,0,0), new Vector3(0, 0, 0), 0, 1);
         PlayerTwoData = new PlayerMovementData(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0, 1);
-        separationDistance = 0;
-        deltaSpeed = 0;
-        averageCycleDuration = 1;
+        _SeparationDistance = 0;
+        _DeltaSpeed = 0;
+        _AverageCycleForBoth = 1;
         CurrentPosition = new Vector3(0, 0, 0);
         PrevPosition = new Vector3(0, 0, 0);
     }
@@ -65,9 +63,10 @@ public class GroupManager : MonoBehaviour
     {
         if (GameManager.PlayerRefList.Count >= 2)
         {
-            m_PlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
-            m_PlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
+            m_NetworkPlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
+            m_NetworkPlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
             twoplayersready = true;
+            OnPlayersReady();
         }
         else 
         {
@@ -79,15 +78,15 @@ public class GroupManager : MonoBehaviour
     {
         if (twoplayersready)
         {
-            PlayerOneData = m_PlayerOneInfo.GetData();
-            PlayerTwoData = m_PlayerTwoInfo.GetData();
+            PlayerOneData = m_NetworkPlayerOneInfo.GetData();
+            PlayerTwoData = m_NetworkPlayerTwoInfo.GetData();
             UpdateGroupParameters();
-            FootstepsAudio();
+            FootstepsFeedback();
         }
     }
     // Update is called once per frame
 
-    private void FootstepsAudio()
+    private void FootstepsFeedback()
     {
         if (PlayerTwoData.Speed > 100)
         {
@@ -96,9 +95,9 @@ public class GroupManager : MonoBehaviour
                 footsteptime += Time.deltaTime;
                 if (footsteptime >= _FootstepCurrentPeriod)
                 {
-                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(separationDistance);
+                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(_SeparationDistance);
                     footsteptime = 0;
-                    _FootstepCurrentPeriod = averageCycleDuration;
+                    _FootstepCurrentPeriod = _AverageCycleForBoth;
                 }
             }
             else
@@ -108,7 +107,7 @@ public class GroupManager : MonoBehaviour
                 //Debug.Log("Distance Covered: " + DistanceCovered);
                 if (DistanceCovered > DistanceToCover)
                 {
-                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(separationDistance);
+                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(_SeparationDistance);
                     DistanceCovered = 0;
                 }
                 PrevPosition = CurrentPosition;
@@ -117,18 +116,18 @@ public class GroupManager : MonoBehaviour
     }
     private void UpdateGroupParameters()
     {
-        separationDistance = SeparationDistance2D(PlayerOneData.Position,PlayerTwoData.Position);
-        deltaSpeed = PlayerOneData.Speed - PlayerTwoData.Speed;
-        averageCycleDuration = ComputeAverageFrequency(PlayerOneData.CycleDuration, PlayerTwoData.CycleDuration);
+        _SeparationDistance = SeparationDistance2D(PlayerOneData.Position,PlayerTwoData.Position);
+        _DeltaSpeed = PlayerOneData.Speed - PlayerTwoData.Speed;
+        _AverageCycleForBoth = ComputeAverageFrequency(PlayerOneData.CycleDuration, PlayerTwoData.CycleDuration);
         //DirectionOrientationAngle = Vector3.Angle(PlayerOneData.Direction , PlayerTwoData.Direction);
 
         //not sure if needed
         //averageSpeed = (PlayerOneData.Speed + PlayerTwoData.Speed)/2;
     }
 
-    private float ComputeAverageFrequency(float Frequency1, float Frequency2)
+    private float ComputeAverageFrequency(float Value1, float Value2)
     {
-        return (Frequency1 + Frequency2) / 2;
+        return (Value1 + Value2) / 2;
     }
 
     private float SeparationDistance2D(Vector3 FirstPosition, Vector3 SecondPosition)
@@ -145,32 +144,32 @@ public class GroupManager : MonoBehaviour
         data.PlayerOneSpeed = PlayerOneData.Speed;
         data.PlayerTwoCycle = PlayerTwoData.CycleDuration;
         data.PlayerTwoSpeed = PlayerTwoData.Speed;
-        data.SeparationDistance = separationDistance;
+        data.SeparationDistance = _SeparationDistance;
         return data;
     }
 
     public void ButtonUpdatedValues(bool AuraState,bool RhythmState, float SpeedAmpValue, float BrightnessValue, bool AlignState)
     {
-        if(m_PlayerOneInfo == null || m_PlayerTwoInfo == null)
+        if(m_NetworkPlayerOneInfo == null || m_NetworkPlayerTwoInfo == null)
         {
             return;
         }
         m_AlignState = AlignState;  
 
-        m_PlayerOneInfo.RPC_Update_AuraState(AuraState);
-        m_PlayerTwoInfo.RPC_Update_AuraState(AuraState);
+        m_NetworkPlayerOneInfo.RPC_Update_AuraState(AuraState);
+        m_NetworkPlayerTwoInfo.RPC_Update_AuraState(AuraState);
 
-        m_PlayerOneInfo.RPC_Update_RhythmState(RhythmState);
-        m_PlayerTwoInfo.RPC_Update_RhythmState(RhythmState);
+        m_NetworkPlayerOneInfo.RPC_Update_RhythmState(RhythmState);
+        m_NetworkPlayerTwoInfo.RPC_Update_RhythmState(RhythmState);
 
-        m_PlayerOneInfo.RPC_Update_Amplifier(SpeedAmpValue);
-        m_PlayerTwoInfo.RPC_Update_Amplifier(SpeedAmpValue);
+        m_NetworkPlayerOneInfo.RPC_Update_Amplifier(SpeedAmpValue);
+        m_NetworkPlayerTwoInfo.RPC_Update_Amplifier(SpeedAmpValue);
 
-        m_PlayerOneInfo.RPC_Update_Brightness(BrightnessValue);
-        m_PlayerTwoInfo.RPC_Update_Brightness(BrightnessValue);
+        m_NetworkPlayerOneInfo.RPC_Update_Brightness(BrightnessValue);
+        m_NetworkPlayerTwoInfo.RPC_Update_Brightness(BrightnessValue);
 
-        m_PlayerOneInfo.RPC_Update_AlignState(AlignState);
-        m_PlayerTwoInfo.RPC_Update_AlignState(AlignState);
+        m_NetworkPlayerOneInfo.RPC_Update_AlignState(AlignState);
+        m_NetworkPlayerTwoInfo.RPC_Update_AlignState(AlignState);
         OnUIUpdated();
     }
     // public void SliderUpdatedValues()
@@ -183,4 +182,24 @@ public class GroupManager : MonoBehaviour
 
     //     OnUIUpdated();
     // }
+    public PlayerMovementData GetPlayerOneData()
+    {
+        return PlayerOneData;
+    }   
+    public PlayerMovementData GetPlayerTwoData()
+    {
+        return PlayerTwoData;
+    }
+    public float GetSeparationDistance()
+    {
+        return _SeparationDistance;
+    }
+    public float GetAverageCycleForBoth()
+    {
+        return _AverageCycleForBoth;
+    }
+    public float GetDeltaSpeed()
+    {
+        return _DeltaSpeed;
+    }
 }

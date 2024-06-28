@@ -89,13 +89,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    IEnumerator SettingUpRunner()
-    {
-        Instantiate(NetworkManager);
-        yield return new WaitForSeconds(1);
-        //XRXP.SetActive(true);
-    }
-
     public static GameObject GetOrigin()
     {
         return origin;

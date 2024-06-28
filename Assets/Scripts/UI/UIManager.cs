@@ -46,6 +46,7 @@ public class UIManager : MonoBehaviour
     {
         StateAura = !StateAura;
         AuraToggle.isOn = StateAura;
+
         UpdateButtonValues();
     }
     public void ButtonUpdatedRhythm()

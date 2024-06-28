@@ -125,7 +125,7 @@ public class PlayerController : MonoBehaviour
             value = value.normalized * _MaxSwingMagnitudeAllowed * ( 1 + m_NetworkPlayerInfo.SpeedAmplifier);
         }
 
-        if (PlayerAverageSpeed > 100f)
+        if (PlayerAverageSpeed > 50f)
             m_CharacterController.SimpleMove( value ); // * Runner.DeltaTime
     }
     public void SetArmswing(bool state)

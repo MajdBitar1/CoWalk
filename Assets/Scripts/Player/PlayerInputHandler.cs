@@ -24,7 +24,7 @@ public class PlayerInputHandler : MonoBehaviour
     void Update()
     {
         CurrentState = CheckState();
-        CheckStates(CurrentState, PrevState);
+        UpdateState(CurrentState, PrevState);
         PrevState = CurrentState;
     }
 
@@ -50,7 +50,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     
-    private void CheckStates(int current, int prev)
+    private void UpdateState(int current, int prev)
     {
         switch (current)
         {
