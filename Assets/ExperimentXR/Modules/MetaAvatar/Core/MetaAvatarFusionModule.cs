@@ -52,6 +52,7 @@ class MetaAvatarFusionModule : Fusion.Behaviour, INetworkRunnerCallbacks
 
     private void SpawnEntity(NetworkRunner runner)
     {
+        if(GameManager.IsCameraMan) return;
         Debug.Log("XPXR.MetaAvatar-Fusion: The host or user join the server");
         // Create a unique position for the player
         NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, null, null, runner.LocalPlayer);

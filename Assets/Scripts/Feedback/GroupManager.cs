@@ -61,7 +61,7 @@ public class GroupManager : MonoBehaviour
 
     private void PlayersUpdated()
     {
-        if (GameManager.PlayerRefList.Count >= 2)
+        if (GameManager.PlayersReady)
         {
             m_NetworkPlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
             m_NetworkPlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
@@ -148,14 +148,12 @@ public class GroupManager : MonoBehaviour
         return data;
     }
 
-    public void ButtonUpdatedValues(bool AuraState,bool RhythmState, float SpeedAmpValue, float BrightnessValue, bool AlignState)
+    public void ButtonUpdatedValues(bool AuraState,bool RhythmState, float SpeedAmpValue)
     {
         if(m_NetworkPlayerOneInfo == null || m_NetworkPlayerTwoInfo == null)
         {
             return;
         }
-        m_AlignState = AlignState;  
-
         m_NetworkPlayerOneInfo.RPC_Update_AuraState(AuraState);
         m_NetworkPlayerTwoInfo.RPC_Update_AuraState(AuraState);
 
@@ -164,24 +162,27 @@ public class GroupManager : MonoBehaviour
 
         m_NetworkPlayerOneInfo.RPC_Update_Amplifier(SpeedAmpValue);
         m_NetworkPlayerTwoInfo.RPC_Update_Amplifier(SpeedAmpValue);
-
-        m_NetworkPlayerOneInfo.RPC_Update_Brightness(BrightnessValue);
-        m_NetworkPlayerTwoInfo.RPC_Update_Brightness(BrightnessValue);
-
-        m_NetworkPlayerOneInfo.RPC_Update_AlignState(AlignState);
-        m_NetworkPlayerTwoInfo.RPC_Update_AlignState(AlignState);
         OnUIUpdated();
     }
-    // public void SliderUpdatedValues()
-    // {
-    //     if(m_PlayerOneInfo == null || m_PlayerTwoInfo == null)
-    //     {
-    //         return;
-    //     }
+    public void UpdateDistanceSliders(float safedis,float maxdis,float cstdis, float adddis)
+    {
+        if(m_NetworkPlayerOneInfo == null || m_NetworkPlayerTwoInfo == null)
+        {
+            return;
+        }
+        m_NetworkPlayerOneInfo.RPC_Update_ADDDIST(adddis);
+        m_NetworkPlayerTwoInfo.RPC_Update_ADDDIST(adddis); 
 
+        m_NetworkPlayerOneInfo.RPC_Update_SAFEDIST(safedis);
+        m_NetworkPlayerTwoInfo.RPC_Update_SAFEDIST(safedis);
 
-    //     OnUIUpdated();
-    // }
+        m_NetworkPlayerOneInfo.RPC_Update_MAXDIST(maxdis);
+        m_NetworkPlayerTwoInfo.RPC_Update_MAXDIST(maxdis);
+
+        m_NetworkPlayerOneInfo.RPC_Update_CSTDIST(cstdis);
+        m_NetworkPlayerTwoInfo.RPC_Update_CSTDIST(cstdis);
+        OnUIUpdated();
+    }
     public PlayerMovementData GetPlayerOneData()
     {
         return PlayerOneData;

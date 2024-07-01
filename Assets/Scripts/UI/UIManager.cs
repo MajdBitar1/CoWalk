@@ -14,13 +14,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI PlayerTwoSpeed;    
     [SerializeField] TextMeshProUGUI PlayerTwoCycle;
     [SerializeField] Slider _SpeedAmp_Slider;
-    [SerializeField] Slider _ThreshholdSlider;
-    [SerializeField] Toggle AuraToggle, RhythmToggle, AlignToggle;
+    [SerializeField] Toggle AuraToggle, RhythmToggle;
 
     private UIData _data;
     private bool StateAura = false;
     private bool StateRhythm = false;
-    private bool StateAlign = false;
 
 
     void LateUpdate()
@@ -55,20 +53,13 @@ public class UIManager : MonoBehaviour
         RhythmToggle.isOn = StateRhythm;
         UpdateButtonValues();
     }
-    public void ButtonUpdatedAlign()
-    {
-        StateAlign = !StateAlign;
-        AlignToggle.isOn = StateAlign;
-        UpdateButtonValues();
-    }
     public void UpdateSliderValue()
     {
         UpdateButtonValues();
     }
-
     private void UpdateButtonValues()
     {
-        _groupman.ButtonUpdatedValues(StateAura, StateRhythm, _SpeedAmp_Slider.value, _ThreshholdSlider.value,StateAlign);
+        _groupman.ButtonUpdatedValues(StateAura, StateRhythm, _SpeedAmp_Slider.value);
     }
     // public void UpdateSliderValues()
     // {

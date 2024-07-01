@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private NetworkPlayerInfo m_NetworkPlayerInfo;
     private CharacterController m_CharacterController;
     private Vector3 m_currentdirection;
-    private float PlayerSpeed;
+    public float PlayerSpeed;
     private PlayerMovementData m_PlayerMoveData = new PlayerMovementData();
     private List<float> SpeedBuffer = new List<float>();
 
@@ -51,21 +51,6 @@ public class PlayerController : MonoBehaviour
     {
         AvatarNetworkManager.OnMetaAvatarSetup -= SetupCC;
         GroupManager.OnUIUpdated -= ChangesFromUI;
-
-        XPXRManager.Recorder.StopSession();
-        StartCoroutine( EndTrackingRoutine() );
-    }
-
-    // void OnApplicationQuit()
-    // {
-    //     XPXRManager.Recorder.StopSession();
-    //     StartCoroutine( EndTrackingRoutine() );
-    // }
-
-    IEnumerator EndTrackingRoutine()
-    {
-        yield return new WaitUntil(() => XPXRManager.Recorder.TransfersState() == 0);
-        XPXRManager.Recorder.EndTracing();
     }
 
     private void SetupCC()
@@ -85,10 +70,6 @@ public class PlayerController : MonoBehaviour
         PlayerSpeed = 0;
         m_currentdirection = Vector3.zero;
         isMoving = true;
-
-        ///
-        XPXRManager.Recorder.StartSession();
-        ///
     }
 
     // Update is called once per frame
@@ -98,13 +79,10 @@ public class PlayerController : MonoBehaviour
         if (m_NetworkPlayerInfo == null) return;
         m_PlayerMoveData.CycleDuration = PlayerCycleDuration;
         PlayerAverageSpeed = UpdateSpeedBuffer(PlayerSpeed);
-        // SHOULD BE EVERY NBER OF FRAMES AND NOT EVERY FRAME
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","PlayerSpeed", new QuantitativeValue(PlayerSpeed) );
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"PlayerData","CycleDuration", new QuantitativeValue(PlayerCycleDuration) );
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.WorldPosition,"PlayerPos","Posotion", new WorldPosition(transform.position,transform.rotation) );
     }
     private void FixedUpdate()
     {
+        if (!GameManager.PlayersReady) return;
         CheckUpdatesfromUI();
     }
     private void LateUpdate()
@@ -132,8 +110,6 @@ public class PlayerController : MonoBehaviour
     {
         m_armswing.enabled = state;
         m_armrhythm.enabled = state;
-        //Debug.Log("Armswing State: " + state);
-        XPXRManager.Recorder.AddLogEvent("Armswing State", "is", state.ToString() ); 
     }
 
     private float UpdateSpeedBuffer(float speed)
@@ -189,7 +165,8 @@ public class PlayerController : MonoBehaviour
         playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-        m_armrhythm.MinimumSwingChange = -0.1f * m_NetworkPlayerInfo.AuraBrightness;
+
+        playerFeedbackManager.UpdateDistanceSliders(m_NetworkPlayerInfo.SAFEDIS, m_NetworkPlayerInfo.MAXDIST, m_NetworkPlayerInfo.CSTDIST, m_NetworkPlayerInfo.ADDDIST);
     }
 
     private void CheckUpdatesfromUI()
@@ -197,10 +174,9 @@ public class PlayerController : MonoBehaviour
         m_armswing.UpdateAmplifier(m_NetworkPlayerInfo.SpeedAmplifier);
         playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
         playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-        playerFeedbackManager.AlignEnabled = m_NetworkPlayerInfo.AlignState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-        m_armrhythm.MinimumSwingChange = -0.1f * m_NetworkPlayerInfo.AuraBrightness;
 
+        playerFeedbackManager.UpdateDistanceSliders(m_NetworkPlayerInfo.SAFEDIS, m_NetworkPlayerInfo.MAXDIST, m_NetworkPlayerInfo.CSTDIST, m_NetworkPlayerInfo.ADDDIST);
     }
     public PlayerMovementData GetPlayerMovementData()
     {

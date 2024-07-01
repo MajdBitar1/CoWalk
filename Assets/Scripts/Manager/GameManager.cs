@@ -13,13 +13,33 @@ public class GameManager : Singleton<GameManager>
     public static GameObject LocalPlayerObject, RemotePlayerObject;
     public static GameObject PlayerOne, PlayerTwo, origin;
     public int playercount = 0;
+    public static bool PlayersReady = false;
     [SerializeField] GameObject NetworkManager;
+    public bool ExposedCameraManBool = false;
+    public static bool IsCameraMan = false;
+    [SerializeField] GameObject CameraManPrefab,XRXP;
+    private static GameObject _CameraMan;
 
     void Awake()
     {
+        IsCameraMan = ExposedCameraManBool;
+        origin = GameObject.Find("origin");
+        if (IsCameraMan)
+        {
+            Destroy(origin);
+            //Destroy(XRXP);
+            _CameraMan = Instantiate(CameraManPrefab);
+            _CameraMan.transform.position = new Vector3(8.5f, 20, 0);
+            _CameraMan.transform.rotation = Quaternion.Euler(45, -90, 0);
+        }
+
         Instantiate(NetworkManager);
         OVRPlugin.systemDisplayFrequency = 72.0f;
-        origin = GameObject.Find("origin");
+
+        // //Performance Level
+        // OVRPlugin.suggestedCpuPerfLevel = OVRPlugin.ProcessorPerformanceLevel.SustainedLow;
+        // OVRPlugin.suggestedGpuPerfLevel = OVRPlugin.ProcessorPerformanceLevel.SustainedLow;
+        // //
     }
     void Start()
     {
@@ -45,6 +65,7 @@ public class GameManager : Singleton<GameManager>
         if (PlayerTwo.GetComponentInChildren<PlayerController>() != null)
         {
             PlayerTwo.GetComponentInChildren<PlayerController>().SetExperimenter(false);
+            _CameraMan.GetComponent<ObserverCameraFollow>().Target = PlayerTwo;
         }
         DefineLocalAndRemotePlayers();
     }
@@ -54,6 +75,7 @@ public class GameManager : Singleton<GameManager>
         if (PlayerOne == null || PlayerTwo == null)
         {
             Debug.LogError("[GM] Player One or Player Two not found");
+            PlayersReady = false;
             return;
         }
         else
@@ -68,6 +90,7 @@ public class GameManager : Singleton<GameManager>
                 LocalPlayerObject = PlayerTwo;
                 RemotePlayerObject = PlayerOne;
             }
+            PlayersReady = true;
             OnPlayerListUpdated();
         }
     }
@@ -93,27 +116,4 @@ public class GameManager : Singleton<GameManager>
     {
         return origin;
     }
-
-    // public static void ResetPlayerList()
-    // {
-    //     Debug.Log("[GM] Resetting Player List");
-    //     PlayerRefList.Clear();
-    //     UpdatePlayerList();
-    // }
-
-    // private static void CheckPlayerList()
-    // {
-    //     foreach (GameObject player in PlayerRefList)
-    //     {
-    //         if (player.GetComponentInChildren<PlayerController>() != null)
-    //             {
-    //                 LocalPlayerObject = player;
-    //                 //LocalPlayerObject.GetComponentInChildren<AudioSource>().volume = 0.5f;
-    //             }
-    //         else
-    //         {
-    //             RemotePlayerObject = player;
-    //         }
-    //     }
-    // }
 }

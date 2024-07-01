@@ -4,6 +4,7 @@
     "com.meta.xr.sdk.all": "65.0.0",
     "com.meta.xr.sdk.avatars": "24.1.1",
     "com.microsoft.mrtk.graphicstools.unity": "https://github.com/microsoft/MixedReality-GraphicsTools-Unity.git?path=/com.microsoft.mrtk.graphicstools.unity#v0.4.0",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.collab-proxy": "2.3.1",
     "com.unity.feature.development": "1.0.1",
     "com.unity.nuget.mono-cecil": "1.10.2",

@@ -7,24 +7,26 @@ public class NetworkPlayerInfo : NetworkBehaviour
 {
     [Networked] 
     public float Speed { get; set; }
-
     [Networked] 
     public float CycleDuration { get; set; }
-
     [Networked] 
     public Vector3 Direction { get; set; }
-
     [Networked]
     public float SpeedAmplifier { get; set;}
-    [Networked]
-    public float AuraBrightness { get; set;}
     [Networked]
     public bool AuraState { get; set; }
     [Networked]
     public bool RhythmState { get; set; }   
 
     [Networked]
-    public bool AlignState { get; set; }
+    public float SAFEDIS { get; set;}
+    [Networked]
+    public float MAXDIST { get; set;}
+    [Networked]
+    public float CSTDIST { get; set;}
+    [Networked]
+    public float ADDDIST { get; set;}
+
 
     private PlayerMovementData m_PlayerMoveData ;
 
@@ -34,7 +36,6 @@ public class NetworkPlayerInfo : NetworkBehaviour
         Speed = 0;
         CycleDuration = 1f;
         SpeedAmplifier = 0.25f;
-        AuraBrightness = 0.5f;
     }
 
 
@@ -73,15 +74,25 @@ public class NetworkPlayerInfo : NetworkBehaviour
     }
 
     [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public void RPC_Update_Brightness(float value)
+    public void RPC_Update_SAFEDIST(float value)
     {
-        AuraBrightness = value;
+        SAFEDIS = value;
     }
 
     [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
-    public void RPC_Update_AlignState(bool state)
+    public void RPC_Update_MAXDIST(float value)
     {
-        AlignState = state;
+        MAXDIST = value;
+    }
+        [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_CSTDIST(float value)
+    {
+        CSTDIST = value;
+    }
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_ADDDIST(float value)
+    {
+        ADDDIST = value;
     }
 
 

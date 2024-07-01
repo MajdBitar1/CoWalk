@@ -25,8 +25,6 @@ public class ComputeArmRhythm : MonoBehaviour
     private Queue<float> Left_Swing_Elevation_Buffer;
     private bool ActivateCycleRight, ActivateCycleLeft;
     private float temprightcycle, templeftcycle;
-    // Start is called before the first frame update
-
     void Awake()
     {
         Right_Swing_Elevation_Buffer = new Queue<float>(BufferSize);

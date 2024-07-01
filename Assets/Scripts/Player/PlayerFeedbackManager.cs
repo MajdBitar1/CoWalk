@@ -21,7 +21,6 @@ public class PlayerFeedbackManager : MonoBehaviour
     [Header("Feedback States")]
     public bool AuraEnabled = false;
     public bool RhythmEnabled = false;
-    public bool AlignEnabled = false;
     public bool _ShowMenu = false;
     private bool inView = false;
     public int OneOfTheLocksIsOn = 0;
@@ -45,18 +44,13 @@ public class PlayerFeedbackManager : MonoBehaviour
     {
         m_AuraEffect = m_AuraObj.GetComponent<VisualEffect>();
     }
-
-    private void Update()
-    {
-        inView = ObjectInCameraView(GameManager.RemotePlayerObject);
-    }
     
     public void PlayRemoteFootstepSound(float value)
     {
         if(RemoteFeedback != null)
         {
             RemoteFeedback.PlayFootstepSound();
-            if(AlignEnabled)
+            if(AuraEnabled)
             {
                 Aura(value);
             }
@@ -82,6 +76,8 @@ public class PlayerFeedbackManager : MonoBehaviour
         }
         //Normalize Distance relative to Min and Max Separation Zones, to Get a value which is Negative While in Safe zone, between safe and max the value will be between 0 and 1
         float value = Mathf.Min( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
+        //Return Bool that checks if other player is in view or not
+        inView = ObjectInCameraView(GameManager.RemotePlayerObject);
         if (!AuraBroken)
         {
             // Value > 0 means the separation distance is > SAFE ZONE
@@ -101,21 +97,19 @@ public class PlayerFeedbackManager : MonoBehaviour
                     if (value >= 1f)
                     {
                         AuraBroken = true;
+                        m_AuraEffect.Stop();
                         return;
                     }   
 
                     // First Scale up based on separation distance, this will ensure that the other player will see ripple effect even at high separation
                     m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + AdditionalValue + value * MaxSeparationZone , 0f, StartingValue + AdditionalValue + value * MaxSeparationZone); 
-                    //Vector3( 20 + value * 15f , 0f, 20 + value * 15f);
                     
-                    //Third is to change the color of the ripples, this will be a gradient from yellow to red
+                    //Second is to change the color of the ripples, this will be a gradient from Oranage to Red
                     Color ColorOnGrad = Color.Lerp( new Color(1,0.74f,0,1) , Color.red , value); // Color(1,0.647f,0,1) is Orange (255,165,0)
                     m_AuraEffect.SetVector4("Color", ColorOnGrad);
 
-                    //Pass the period inorder to play pulses based on it
-                    //This will also decide it Alignment is on, to play pulses on every step
+                    //Finally Play the effect
                     m_AuraEffect.Play();
-                    //PulseAlignment(pulseperiod);
                 }
             }
         }
@@ -124,17 +118,14 @@ public class PlayerFeedbackManager : MonoBehaviour
         if (value <= 0)
         {
             AuraBroken = false;
-
             if (inView) 
             {
                 //if you can see other player, ripple effect will stop
                 m_AuraEffect.Stop();
                 return;
             }
-
-            m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + value * MaxSeparationZone , 0f, StartingValue  + value * MaxSeparationZone);
+            m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + 2 + value * MaxSeparationZone , 0f, StartingValue + 2 + value * MaxSeparationZone);
             m_AuraEffect.SetVector4("Color", Color.white );
-            //Independent of Steps, Aura will pulse
             m_AuraEffect.Play();
         }
     }
@@ -212,5 +203,13 @@ public class PlayerFeedbackManager : MonoBehaviour
         {
             return 0;
         }
+    }
+
+    public void UpdateDistanceSliders(float Safe, float Max, float Cst, float Add)
+    {
+        SafeSeparationZone = Safe;
+        MaxSeparationZone = Max;
+        StartingValue = Cst;
+        AdditionalValue = Add;
     }
 }
