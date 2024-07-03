@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8604217868453625449}
   - component: {fileID: -2275775337667281886}
   - component: {fileID: -5382537169786932397}
+  - component: {fileID: 6538266196264751419}
   m_Layer: 0
   m_Name: CameraMan
   m_TagString: Untagged
@@ -145,3 +146,11 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!81 &6538266196264751419
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491338133187201461}
+  m_Enabled: 1

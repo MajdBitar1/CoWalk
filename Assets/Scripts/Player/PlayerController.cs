@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     [Header("STATE VARIABLES")]
     //State Dependent Variables
     public bool isMoving;
+    public bool TouchWalkingEnabled = false;
     public bool RightLocked = false;
     public bool LeftLocked = false;
     public bool RhythmEnabled = false;

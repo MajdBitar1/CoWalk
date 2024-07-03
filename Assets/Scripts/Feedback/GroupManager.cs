@@ -13,7 +13,6 @@ public class GroupManager : MonoBehaviour
     public static event UIUpdated OnUIUpdated;
 
     [Header("Input Data")]
-    [SerializeField] PlayerController m_LocalPlayerConroller;
     [SerializeField] PlayerFeedbackManager m_PlayerFeedbackManager;
     private NetworkPlayerInfo m_NetworkPlayerOneInfo;
     private NetworkPlayerInfo m_NetworkPlayerTwoInfo;
@@ -24,16 +23,14 @@ public class GroupManager : MonoBehaviour
     private float _SeparationDistance;
     private float _DeltaSpeed;
     private float _AverageCycleForBoth;
-    //private float DirectionOrientationAngle;
     private float footsteptime = 0f;
     private bool twoplayersready = false;
-    private bool m_AlignState = false;
 
-    [Header("Tuning Parameters")]
-    [SerializeField] float DistanceToCover = 1.5f;
-    //public float averageSpeed;
-    private Vector3 CurrentPosition, PrevPosition;
-    private float DistanceCovered = 0;
+    // [Header("Tuning Parameters")]
+    // // [SerializeField] float DistanceToCover = 1.5f;
+    // // //public float averageSpeed;
+    // private Vector3 CurrentPosition, PrevPosition;
+    // private float DistanceCovered = 0;
 
 
     // Start is called before the first frame update
@@ -44,18 +41,16 @@ public class GroupManager : MonoBehaviour
         _SeparationDistance = 0;
         _DeltaSpeed = 0;
         _AverageCycleForBoth = 1;
-        CurrentPosition = new Vector3(0, 0, 0);
-        PrevPosition = new Vector3(0, 0, 0);
+        // CurrentPosition = new Vector3(0, 0, 0);
+        // PrevPosition = new Vector3(0, 0, 0);
     }
 
     private void OnEnable()
     {
-        //TimeEventManager.OnTimeEvent += UpdateStepFrequency;
         GameManager.OnPlayerListUpdated += PlayersUpdated;
     }
     private void OnDisable()
     {
-        //TimeEventManager.OnTimeEvent -= UpdateStepFrequency;
         GameManager.OnPlayerListUpdated -= PlayersUpdated;
     }
 
@@ -63,8 +58,16 @@ public class GroupManager : MonoBehaviour
     {
         if (GameManager.PlayersReady)
         {
-            m_NetworkPlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
-            m_NetworkPlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
+            if (GameManager.IsCameraMan)
+            {
+                m_NetworkPlayerOneInfo = GameManager.PlayerOne.GetComponent<NetworkPlayerInfo>();
+                m_NetworkPlayerTwoInfo = GameManager.PlayerTwo.GetComponent<NetworkPlayerInfo>();
+            }
+            else
+            {
+                m_NetworkPlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
+                m_NetworkPlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
+            }
             twoplayersready = true;
             OnPlayersReady();
         }
@@ -90,8 +93,9 @@ public class GroupManager : MonoBehaviour
     {
         if (PlayerTwoData.Speed > 100)
         {
-            if(m_LocalPlayerConroller.RhythmEnabled)
+            if(m_NetworkPlayerOneInfo.RhythmState)
             {
+                // Average Rhythm Based Footstps
                 footsteptime += Time.deltaTime;
                 if (footsteptime >= _FootstepCurrentPeriod)
                 {
@@ -102,15 +106,14 @@ public class GroupManager : MonoBehaviour
             }
             else
             {
-                CurrentPosition = PlayerTwoData.Position;
-                DistanceCovered += Vector3.Distance(CurrentPosition, PrevPosition);
-                //Debug.Log("Distance Covered: " + DistanceCovered);
-                if (DistanceCovered > DistanceToCover)
+                // Base Condition Rhythm Based Footstps
+                footsteptime += Time.deltaTime;
+                if (footsteptime >= _FootstepCurrentPeriod)
                 {
                     m_PlayerFeedbackManager.PlayRemoteFootstepSound(_SeparationDistance);
-                    DistanceCovered = 0;
+                    footsteptime = 0;
+                    _FootstepCurrentPeriod = PlayerTwoData.CycleDuration;
                 }
-                PrevPosition = CurrentPosition;
             }
         }
     }
@@ -119,10 +122,6 @@ public class GroupManager : MonoBehaviour
         _SeparationDistance = SeparationDistance2D(PlayerOneData.Position,PlayerTwoData.Position);
         _DeltaSpeed = PlayerOneData.Speed - PlayerTwoData.Speed;
         _AverageCycleForBoth = ComputeAverageFrequency(PlayerOneData.CycleDuration, PlayerTwoData.CycleDuration);
-        //DirectionOrientationAngle = Vector3.Angle(PlayerOneData.Direction , PlayerTwoData.Direction);
-
-        //not sure if needed
-        //averageSpeed = (PlayerOneData.Speed + PlayerTwoData.Speed)/2;
     }
 
     private float ComputeAverageFrequency(float Value1, float Value2)
@@ -204,3 +203,14 @@ public class GroupManager : MonoBehaviour
         return _DeltaSpeed;
     }
 }
+
+//Basic Footsteps based on Distance covered
+// CurrentPosition = PlayerTwoData.Position;
+// DistanceCovered += Vector3.Distance(CurrentPosition, PrevPosition);
+// //Debug.Log("Distance Covered: " + DistanceCovered);
+// if (DistanceCovered > DistanceToCover)
+// {
+//     m_PlayerFeedbackManager.PlayRemoteFootstepSound(_SeparationDistance);
+//     DistanceCovered = 0;
+// }
+// PrevPosition = CurrentPosition;

@@ -35,7 +35,13 @@ public class NetworkPlayerInfo : NetworkBehaviour
         m_PlayerMoveData = new PlayerMovementData();
         Speed = 0;
         CycleDuration = 1f;
-        SpeedAmplifier = 0.25f;
+        SpeedAmplifier = 0.4f;
+        AuraState = false;
+        RhythmState = false;
+        SAFEDIS = 6f;
+        MAXDIST = 15f;
+        CSTDIST = 9f;
+        ADDDIST = 3f;
     }
 
 

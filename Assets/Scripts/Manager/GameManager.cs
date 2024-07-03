@@ -8,16 +8,16 @@ public class GameManager : Singleton<GameManager>
 {
     public delegate void PlayerListUpdated();
     public static event PlayerListUpdated OnPlayerListUpdated;
-
     public static List<GameObject> PlayerRefList = new List<GameObject>();
     public static GameObject LocalPlayerObject, RemotePlayerObject;
     public static GameObject PlayerOne, PlayerTwo, origin;
     public int playercount = 0;
     public static bool PlayersReady = false;
     [SerializeField] GameObject NetworkManager;
+    [SerializeField] GameObject CameraManPrefab;
+    [Header("Enable Spectator Mode")]
     public bool ExposedCameraManBool = false;
     public static bool IsCameraMan = false;
-    [SerializeField] GameObject CameraManPrefab,XRXP;
     private static GameObject _CameraMan;
 
     void Awake()
@@ -27,23 +27,12 @@ public class GameManager : Singleton<GameManager>
         if (IsCameraMan)
         {
             Destroy(origin);
-            //Destroy(XRXP);
             _CameraMan = Instantiate(CameraManPrefab);
             _CameraMan.transform.position = new Vector3(8.5f, 20, 0);
             _CameraMan.transform.rotation = Quaternion.Euler(45, -90, 0);
         }
-
         Instantiate(NetworkManager);
         OVRPlugin.systemDisplayFrequency = 72.0f;
-
-        // //Performance Level
-        // OVRPlugin.suggestedCpuPerfLevel = OVRPlugin.ProcessorPerformanceLevel.SustainedLow;
-        // OVRPlugin.suggestedGpuPerfLevel = OVRPlugin.ProcessorPerformanceLevel.SustainedLow;
-        // //
-    }
-    void Start()
-    {
-        //StartCoroutine( SettingUpRunner() );
     }
     private void LateUpdate()
     {
@@ -65,7 +54,10 @@ public class GameManager : Singleton<GameManager>
         if (PlayerTwo.GetComponentInChildren<PlayerController>() != null)
         {
             PlayerTwo.GetComponentInChildren<PlayerController>().SetExperimenter(false);
-            _CameraMan.GetComponent<ObserverCameraFollow>().Target = PlayerTwo;
+            if (IsCameraMan)
+            {
+                _CameraMan.GetComponent<ObserverCameraFollow>().Target = PlayerTwo;
+            }
         }
         DefineLocalAndRemotePlayers();
     }

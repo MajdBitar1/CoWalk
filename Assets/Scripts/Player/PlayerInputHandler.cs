@@ -31,19 +31,24 @@ public class PlayerInputHandler : MonoBehaviour
 
     private int CheckState()
     {
-        if ( OVRInput.GetUp(OVRInput.Button.Three) ) // Lock Left
-        {
-            return 1;
-        }
+        // if ( OVRInput.GetUp(OVRInput.Button.Three) ) // Lock Left
+        // {
+        //     return 1;
+        // }
 
-        else if ( OVRInput.GetUp(OVRInput.Button.One) ) // Lock Right
-        {
-            return 2;
-        }
-
-        else if (OVRInput.GetUp(OVRInput.Button.Two) || OVRInput.GetUp(OVRInput.Button.Four) ) // Show Menu
+        // else if ( OVRInput.GetUp(OVRInput.Button.One) ) // Lock Right
+        // {
+        //     return 2;
+        // }
+        if (OVRInput.GetUp(OVRInput.Button.Two) || OVRInput.GetUp(OVRInput.Button.Four) ) // Show Menu
         {
             return 3;
+        }
+        else if ( OVRInput.Get(OVRInput.Touch.PrimaryThumbRest) ||  OVRInput.Get(OVRInput.Touch.SecondaryThumbRest) 
+                ||  OVRInput.Get(OVRInput.Touch.One) || OVRInput.Get(OVRInput.Touch.Two) 
+                || OVRInput.Get(OVRInput.Touch.Three) || OVRInput.Get(OVRInput.Touch.Four) ) // Walking
+        {
+            return 4;
         }
 
         return 0;
@@ -68,7 +73,11 @@ public class PlayerInputHandler : MonoBehaviour
                 //ShowMenu
                 m_playercontroller.ShowMenu();
                 break;
+            case 4:
+                m_playercontroller.TouchWalkingEnabled = true;
+                break;
             default:
+                m_playercontroller.TouchWalkingEnabled = false;
                 break;
         }
     }

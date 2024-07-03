@@ -100,7 +100,7 @@ public class ComputeArmRhythm : MonoBehaviour
         }
         Left_Swing_Elevation_Buffer.Enqueue(m_lefthand.transform.localPosition.y);
         _leftsum += m_lefthand.transform.localPosition.y;
-        if (_leftsum - _prevleftsum < -MinimumSwingChange)
+        if (_leftsum - _prevleftsum < MinimumSwingChange) // - MinimumSwingChange ??
         {
             LeftCycleChanged();
         }

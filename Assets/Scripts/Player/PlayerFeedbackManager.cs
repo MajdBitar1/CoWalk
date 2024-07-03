@@ -3,7 +3,6 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.VFX;
 
-[RequireComponent(typeof(PlayerController))]
 public class PlayerFeedbackManager : MonoBehaviour
 {
     [Header("Feedback Objects")]
@@ -35,7 +34,14 @@ public class PlayerFeedbackManager : MonoBehaviour
     }
     private void GetRemoteFeedback()
     {
-        RemoteFeedback = GameManager.RemotePlayerObject.GetComponentInChildren<JukeBox>();
+        if (GameManager.IsCameraMan)
+        {
+            RemoteFeedback = GameManager.PlayerTwo.GetComponentInChildren<JukeBox>();
+        }
+        else 
+        {
+            RemoteFeedback = GameManager.RemotePlayerObject.GetComponentInChildren<JukeBox>();  
+        }
         m_AuraObj.gameObject.transform.parent = GameManager.RemotePlayerObject.gameObject.transform.FindChildRecursive("AllLOD");
         m_AuraObj.gameObject.transform.localPosition = new Vector3(0, 0.01f, 0);
     }
@@ -43,6 +49,13 @@ public class PlayerFeedbackManager : MonoBehaviour
     private void Start()
     {
         m_AuraEffect = m_AuraObj.GetComponent<VisualEffect>();
+    }
+
+    private void OnApplicationQuit()
+    {
+        m_AuraObj.gameObject.transform.localScale = new Vector3(40,40,40);
+        m_AuraEffect.SetFloat("Lifetime", 1.5f);
+        m_AuraEffect.SetVector4("Color", Color.white );
     }
     
     public void PlayRemoteFootstepSound(float value)
@@ -76,8 +89,12 @@ public class PlayerFeedbackManager : MonoBehaviour
         }
         //Normalize Distance relative to Min and Max Separation Zones, to Get a value which is Negative While in Safe zone, between safe and max the value will be between 0 and 1
         float value = Mathf.Min( 1, (distance - SafeSeparationZone) / MaxSeparationZone ) ;
+        Debug.Log("[GroupMan] Value: " + value);
         //Return Bool that checks if other player is in view or not
-        inView = ObjectInCameraView(GameManager.RemotePlayerObject);
+        if (!GameManager.IsCameraMan)
+        {
+            inView = ObjectInCameraView(GameManager.RemotePlayerObject);
+        }
         if (!AuraBroken)
         {
             // Value > 0 means the separation distance is > SAFE ZONE
@@ -102,8 +119,8 @@ public class PlayerFeedbackManager : MonoBehaviour
                     }   
 
                     // First Scale up based on separation distance, this will ensure that the other player will see ripple effect even at high separation
-                    m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + AdditionalValue + value * MaxSeparationZone , 0f, StartingValue + AdditionalValue + value * MaxSeparationZone); 
-                    
+                    m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + AdditionalValue + (value * 1.25f * MaxSeparationZone) , 0f, StartingValue + AdditionalValue + (value * 1.25f * MaxSeparationZone) ); 
+                    m_AuraEffect.SetFloat("Lifetime", 1.5f + value);
                     //Second is to change the color of the ripples, this will be a gradient from Oranage to Red
                     Color ColorOnGrad = Color.Lerp( new Color(1,0.74f,0,1) , Color.red , value); // Color(1,0.647f,0,1) is Orange (255,165,0)
                     m_AuraEffect.SetVector4("Color", ColorOnGrad);
@@ -124,6 +141,7 @@ public class PlayerFeedbackManager : MonoBehaviour
                 m_AuraEffect.Stop();
                 return;
             }
+            m_AuraEffect.SetFloat("Lifetime", 1.5f);
             m_AuraObj.gameObject.transform.localScale = new Vector3( StartingValue + 2 + value * MaxSeparationZone , 0f, StartingValue + 2 + value * MaxSeparationZone);
             m_AuraEffect.SetVector4("Color", Color.white );
             m_AuraEffect.Play();
@@ -150,11 +168,11 @@ public class PlayerFeedbackManager : MonoBehaviour
         {
             m_InteractionObj.SetActive(true);
             m_StatsMenuObj.gameObject.transform.forward = Camera.main.transform.forward.normalized;
-            m_StatsMenuObj.gameObject.transform.position = transform.position + Camera.main.transform.forward.normalized * 3  + new Vector3(0, 3f, 0);
+            m_StatsMenuObj.gameObject.transform.position = GameManager.PlayerOne.gameObject.transform.position + Camera.main.transform.forward.normalized * 3  + new Vector3(0, 3f, 0);
 
             Vector3 InfrontOfPlayer = Vector3.Cross(Camera.main.transform.forward.normalized, Camera.main.transform.up.normalized).normalized;
             m_TuningMenuObj.gameObject.transform.forward = InfrontOfPlayer;
-            m_TuningMenuObj.gameObject.transform.position = transform.position + InfrontOfPlayer * 3 + new Vector3(0, 3f, 0);
+            m_TuningMenuObj.gameObject.transform.position = GameManager.PlayerOne.gameObject.transform.position + InfrontOfPlayer * 3 + new Vector3(0, 3f, 0);
             m_StatsMenuObj.SetActive(true);
             m_TuningMenuObj.SetActive(true);
         }

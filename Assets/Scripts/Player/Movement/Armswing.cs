@@ -91,16 +91,16 @@ public class Armswing : MonoBehaviour
         
         playerspeed = playerspeed * SpeedAmplifier;
 
-        // if (Vector3.Dot(HipDirection.normalized, HeadDirection.normalized) < DifferenceHeadandDirection)
-        // {
-        //     playerspeed = playerspeed * 0.8f;
-        // }
+        if (Vector3.Dot(HipDirection.normalized, HeadDirection.normalized) < DifferenceHeadandDirection)
+        {
+            playerspeed = playerspeed * 0.8f;
+        }
 
-        // if (Vector3.Dot(HipDirection.normalized, prevHipDirection.normalized) < RotationDetectionThreshold)
-        // {
-        //     //Debug.Log("Rotation Detected");
-        //     playerspeed = playerspeed * 0.01f;
-        // }
+        if (Vector3.Dot(HipDirection.normalized, prevHipDirection.normalized) < RotationDetectionThreshold)
+        {
+            //Debug.Log("Rotation Detected");
+            playerspeed = playerspeed * 0.001f;
+        }
 
         
         _playermovementdata = new PlayerMovementData(transform.position, direction, playerspeed, 1);
