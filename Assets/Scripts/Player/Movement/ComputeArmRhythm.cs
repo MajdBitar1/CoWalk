@@ -5,7 +5,6 @@ using UnityEngine;
 public class ComputeArmRhythm : MonoBehaviour
 {
     private PlayerController m_playercontroller;
-    private PlayerFeedbackManager m_playerfeedback;
     private GameObject m_lefthand, m_righthand;
     [SerializeField] float ResetAfterTime=4f;
     [SerializeField] float MinimumCycleDuration = 0.4f;
@@ -39,7 +38,7 @@ public class ComputeArmRhythm : MonoBehaviour
         m_playercontroller = GetComponent<PlayerController>();
         m_lefthand = m_playercontroller.GetLeftHand();
         m_righthand = m_playercontroller.GetRightHand();
-        m_playerfeedback = m_playercontroller.GetPlayerFeedbackManager();
+        // m_playerfeedback = m_playercontroller.GetPlayerFeedbackManager();
         ResetParametersAndBuffers();
     }
 

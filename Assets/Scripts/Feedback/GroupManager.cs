@@ -1,37 +1,20 @@
 using UnityEngine;
-
-
 // GroupManager is a class that manages the group of players, 
 // it receives the data from the PlayerManagers of each player 
 // computes parameters for the group and then sends back modifications 
 // for each player so that they can adjust their movement accordingly and receive proper feedback based on other player's actions.
 public class GroupManager : MonoBehaviour
 {
-    public delegate void PlayersReady();
-    public static event PlayersReady OnPlayersReady;
-    public delegate void UIUpdated();
-    public static event UIUpdated OnUIUpdated;
-
     [Header("Input Data")]
     [SerializeField] PlayerFeedbackManager m_PlayerFeedbackManager;
+    [SerializeField] FootstepsManager _FootStepsMan;
     private NetworkPlayerInfo m_NetworkPlayerOneInfo;
     private NetworkPlayerInfo m_NetworkPlayerTwoInfo;
     private PlayerMovementData PlayerOneData, PlayerTwoData;
-
-    [Header("Debugging Information")]
-    public float _FootstepCurrentPeriod = 1f;
     private float _SeparationDistance;
     private float _DeltaSpeed;
     private float _AverageCycleForBoth;
-    private float footsteptime = 0f;
     private bool twoplayersready = false;
-
-    // [Header("Tuning Parameters")]
-    // // [SerializeField] float DistanceToCover = 1.5f;
-    // // //public float averageSpeed;
-    // private Vector3 CurrentPosition, PrevPosition;
-    // private float DistanceCovered = 0;
-
 
     // Start is called before the first frame update
     void Start()
@@ -41,8 +24,6 @@ public class GroupManager : MonoBehaviour
         _SeparationDistance = 0;
         _DeltaSpeed = 0;
         _AverageCycleForBoth = 1;
-        // CurrentPosition = new Vector3(0, 0, 0);
-        // PrevPosition = new Vector3(0, 0, 0);
     }
 
     private void OnEnable()
@@ -69,7 +50,6 @@ public class GroupManager : MonoBehaviour
                 m_NetworkPlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
             }
             twoplayersready = true;
-            OnPlayersReady();
         }
         else 
         {
@@ -83,40 +63,11 @@ public class GroupManager : MonoBehaviour
         {
             PlayerOneData = m_NetworkPlayerOneInfo.GetData();
             PlayerTwoData = m_NetworkPlayerTwoInfo.GetData();
+            _FootStepsMan.UpdatePlayersInfo(m_NetworkPlayerOneInfo,m_NetworkPlayerTwoInfo);
             UpdateGroupParameters();
-            FootstepsFeedback();
         }
     }
     // Update is called once per frame
-
-    private void FootstepsFeedback()
-    {
-        if (PlayerTwoData.Speed > 100)
-        {
-            if(m_NetworkPlayerOneInfo.RhythmState)
-            {
-                // Average Rhythm Based Footstps
-                footsteptime += Time.deltaTime;
-                if (footsteptime >= _FootstepCurrentPeriod)
-                {
-                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(_SeparationDistance);
-                    footsteptime = 0;
-                    _FootstepCurrentPeriod = _AverageCycleForBoth;
-                }
-            }
-            else
-            {
-                // Base Condition Rhythm Based Footstps
-                footsteptime += Time.deltaTime;
-                if (footsteptime >= _FootstepCurrentPeriod)
-                {
-                    m_PlayerFeedbackManager.PlayRemoteFootstepSound(_SeparationDistance);
-                    footsteptime = 0;
-                    _FootstepCurrentPeriod = PlayerTwoData.CycleDuration;
-                }
-            }
-        }
-    }
     private void UpdateGroupParameters()
     {
         _SeparationDistance = SeparationDistance2D(PlayerOneData.Position,PlayerTwoData.Position);
@@ -161,7 +112,6 @@ public class GroupManager : MonoBehaviour
 
         m_NetworkPlayerOneInfo.RPC_Update_Amplifier(SpeedAmpValue);
         m_NetworkPlayerTwoInfo.RPC_Update_Amplifier(SpeedAmpValue);
-        OnUIUpdated();
     }
     public void UpdateDistanceSliders(float safedis,float maxdis,float cstdis, float adddis)
     {
@@ -180,7 +130,6 @@ public class GroupManager : MonoBehaviour
 
         m_NetworkPlayerOneInfo.RPC_Update_CSTDIST(cstdis);
         m_NetworkPlayerTwoInfo.RPC_Update_CSTDIST(cstdis);
-        OnUIUpdated();
     }
     public PlayerMovementData GetPlayerOneData()
     {
@@ -201,6 +150,10 @@ public class GroupManager : MonoBehaviour
     public float GetDeltaSpeed()
     {
         return _DeltaSpeed;
+    }
+    public bool GetRhythmState()
+    {
+        return m_NetworkPlayerOneInfo.RhythmState;
     }
 }
 

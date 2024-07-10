@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerController))]
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -62,12 +59,12 @@ public class PlayerInputHandler : MonoBehaviour
             case 1:
                 //lockLEFT
                 m_playercontroller.LeftLocked = !m_playercontroller.LeftLocked;
-                m_playercontroller.UpdateLock();
+                //m_playercontroller.UpdateLock();
                 break;
             case 2:
                 //lockRIGHT
                 m_playercontroller.RightLocked = !m_playercontroller.RightLocked;
-                m_playercontroller.UpdateLock();
+                //m_playercontroller.UpdateLock();
                 break;
             case 3:
                 //ShowMenu

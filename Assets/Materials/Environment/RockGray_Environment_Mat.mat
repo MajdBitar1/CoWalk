@@ -14,12 +14,7 @@ Material:
   m_ValidKeywords:
   - _BORDER_LIGHT_REPLACES_ALBEDO
   - _BORDER_LIGHT_USES_GRADIENT
-  - _DIRECTIONAL_LIGHT
-  - _DISABLE_ALBEDO_MAP
   - _HOVER_COLOR_OVERRIDE
-  - _RIM_LIGHT
-  - _SPECULAR_HIGHLIGHTS
-  - _SPHERICAL_HARMONICS
   - _USE_WORLD_SCALE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -66,8 +61,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 702644a214653cc46b273534dc04e285, type: 3}
+        m_Scale: {x: 100, y: 3}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -114,7 +109,7 @@ Material:
     - _CustomMode: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DirectionalLight: 1
+    - _DirectionalLight: 0
     - _DstBlend: 0
     - _EdgeSmoothingMode: 0
     - _EdgeSmoothingValue: 0.002
@@ -153,7 +148,7 @@ Material:
     - _IridescenceAngle: -0.78
     - _IridescenceIntensity: 0.5
     - _IridescenceThreshold: 0.05
-    - _Metallic: 0.52
+    - _Metallic: 0.5
     - _MipmapBias: -2
     - _Mode: 0
     - _NearLightFade: 0
@@ -168,16 +163,16 @@ Material:
     - _Refraction: 0
     - _RefractiveIndex: 1.1
     - _RenderQueueOverride: -1
-    - _RimLight: 1
+    - _RimLight: 0
     - _RimPower: 2
     - _RoundCornerMargin: 0
     - _RoundCornerRadius: 0.25
     - _RoundCorners: 0
     - _RoundCornersHideInterior: 0
-    - _Smoothness: 0.511
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SphericalHarmonics: 1
+    - _SpecularHighlights: 0
+    - _SphericalHarmonics: 0
     - _SrcBlend: 1
     - _Stencil: 0
     - _StencilComparison: 0
@@ -202,7 +197,7 @@ Material:
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
     - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
+    - _Color: {r: 0.5773585, g: 0.5773585, b: 0.5773585, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}

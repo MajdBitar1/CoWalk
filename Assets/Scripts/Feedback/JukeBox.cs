@@ -1,12 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Fusion;
 
 public class JukeBox : MonoBehaviour
 {
+
     [SerializeField] List<AudioClip> clips;
     [SerializeField] AudioSource audioSource;
     private int clipcounter = 0;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     public void PlayFootstepSound()
     {

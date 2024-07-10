@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Fusion;   
+using Fusion;
+using System;
 
 public class NetworkPlayerInfo : NetworkBehaviour
 {
@@ -17,7 +18,6 @@ public class NetworkPlayerInfo : NetworkBehaviour
     public bool AuraState { get; set; }
     [Networked]
     public bool RhythmState { get; set; }   
-
     [Networked]
     public float SAFEDIS { get; set;}
     [Networked]
@@ -26,7 +26,6 @@ public class NetworkPlayerInfo : NetworkBehaviour
     public float CSTDIST { get; set;}
     [Networked]
     public float ADDDIST { get; set;}
-
 
     private PlayerMovementData m_PlayerMoveData ;
 
@@ -100,6 +99,7 @@ public class NetworkPlayerInfo : NetworkBehaviour
     {
         ADDDIST = value;
     }
+
 
 
     public PlayerMovementData GetData()

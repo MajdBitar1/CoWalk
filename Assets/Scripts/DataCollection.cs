@@ -9,33 +9,35 @@ public class DataCollection : MonoBehaviour
 {
     [SerializeField] GroupManager _GroupMan;
     [SerializeField] PlayerFeedbackManager _PlayerFeedbackMan;
+    [SerializeField] FootstepsManager _FootstepsMan;
     [SerializeField] Toggle _TracingStateToggle;
     private PlayerMovementData _PlayerOneData,_PlayerTwoData;
-    private float SeparationDistance;
-    private float AverageCycleDuration;
-    private float DeltaSpeed;
-    private int counter = 0;
-    private bool TracingState = false;
+    private float _SeparationDistance;
+    private float _AverageCycleDuration;
+    private int _RhythmState = 0;
+    private float _DeltaSpeed;
+    private int _counter = 0;
+    private bool _TracingState = false;
     
     void OnEnable()
     {
-        GroupManager.OnPlayersReady += ChangeTracingState;
+        GameManager.OnPlayerListUpdated += ChangeTracingState;
     }
     void OnDisable()
     {
-        GroupManager.OnPlayersReady -= ChangeTracingState;
+        GameManager.OnPlayerListUpdated -= ChangeTracingState;
     }
     void OnApplicationQuit()
     {
-        if(TracingState)
+        if(_TracingState)
         {
             StopTracing();
         }
     }
     public void ChangeTracingState()
     {
-        TracingState = !TracingState;
-        if(TracingState)
+        _TracingState = !_TracingState;
+        if(_TracingState)
         {
             StartTracing();
         }
@@ -43,7 +45,7 @@ public class DataCollection : MonoBehaviour
         {
             StopTracing();
         }
-        _TracingStateToggle.isOn = TracingState;
+        _TracingStateToggle.isOn = _TracingState;
     }
     private void StartTracing()
     {
@@ -57,26 +59,42 @@ public class DataCollection : MonoBehaviour
     {
         yield return new WaitUntil(() => XPXRManager.Recorder.TransfersState() == 0);
         XPXRManager.Recorder.EndTracing();
-        TracingState = false;
+        _TracingState = false;
     }
 
     void LateUpdate()
     {
-        if (!TracingState) return;
-        _PlayerOneData = _GroupMan.GetPlayerOneData();
-        _PlayerTwoData = _GroupMan.GetPlayerTwoData();
-        DeltaSpeed = _GroupMan.GetDeltaSpeed();
-        SeparationDistance = _GroupMan.GetSeparationDistance();
-        AverageCycleDuration = _GroupMan.GetAverageCycleForBoth();
-
-        if(counter >= 30)
+        if (!_TracingState) return;
+        if(_counter >= 30)
         {
+            UpdateData();
             LogData();
-            counter = 0;
+            _counter = 0;
         }
-        counter++;
+        _counter++;
     }
 
+    public int RhythmStatus()
+    {
+        if (_GroupMan.GetRhythmState() )
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    private void UpdateData()
+    {
+        _PlayerOneData = _GroupMan.GetPlayerOneData();
+        _PlayerTwoData = _GroupMan.GetPlayerTwoData();
+        _DeltaSpeed = _GroupMan.GetDeltaSpeed();
+        _SeparationDistance = _GroupMan.GetSeparationDistance();
+        _AverageCycleDuration = _GroupMan.GetAverageCycleForBoth();
+        _RhythmState = RhythmStatus();
+    }
     private void LogData()
     {
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"LocalPlayerData","Speed", new QuantitativeValue(_PlayerOneData.Speed) );
@@ -92,14 +110,15 @@ public class DataCollection : MonoBehaviour
         ////////////////////////////////////////////////////////////////// CHECK THIS ////////////////////////////////////////////////////////////////////
 
         ///GROUP DATA
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"GroupData","SeparationDistance", new QuantitativeValue(SeparationDistance) );
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"GroupData","AverageCycleDuration", new QuantitativeValue(AverageCycleDuration) );
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"GroupData","DeltaSpeed", new QuantitativeValue(DeltaSpeed) );
+        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"GroupData","SeparationDistance", new QuantitativeValue(_SeparationDistance) );
+        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"GroupData","AverageCycleDuration", new QuantitativeValue(_AverageCycleDuration) );
+        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"GroupData","DeltaSpeed", new QuantitativeValue(_DeltaSpeed) );
 
         ///STATES
+        ///-1 is BrokenAura, 0 is Aura NOT Broken but NOT enabled, 1 is Aura is Enabled BUT INVIEW, 2 is Aura is Enabled and Visualizing
         XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"FeatureState","AuraEnabled", new QuantitativeValue(_PlayerFeedbackMan.AuraStatus() ) );
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"FeatureState","SeeingOtherPlayer", new QuantitativeValue(_PlayerFeedbackMan.InViewStatus() ) );
-        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"FeatureState","RhythmEnabled", new QuantitativeValue(_PlayerFeedbackMan.RhythmStatus() ) );
+        // XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"FeatureState","SeeingOtherPlayer", new QuantitativeValue(_FootstepsMan.InViewStatus() ) );
+        XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"FeatureState","RhythmEnabled", new QuantitativeValue( _RhythmState ) );
         //XPXRManager.Recorder.AddInternalEvent(XPXR.Recorder.Models.SystemType.QuantitativeValue,"FeatureState","OneOftheLocksEnabled", new QuantitativeValue(_PlayerFeedbackMan.OneOfTheLocksIsOn ) );
         ///
 

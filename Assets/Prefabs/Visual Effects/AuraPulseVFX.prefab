@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8273657268412969391}
   - component: {fileID: 1482135307640231705}
   - component: {fileID: 6170528540748710929}
+  - component: {fileID: 6036838496316441472}
   m_Layer: 0
   m_Name: AuraPulseVFX
   m_TagString: Untagged
@@ -111,3 +112,20 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &6036838496316441472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713270148162772777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b71ce735b087184bb0e63726d729d38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SafeSeparationZone: 5
+  MaxSeparationZone: 10
+  StartingValue: 9
+  AdditionalValue: 1
+  AuraEnabled: 0

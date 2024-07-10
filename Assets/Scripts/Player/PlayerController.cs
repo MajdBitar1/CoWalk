@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using XPXR.Recorder.Models;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Armswing m_armswing;
     [SerializeField] ComputeArmRhythm m_armrhythm;
     [SerializeField] PlayerFeedbackManager playerFeedbackManager;
+    [SerializeField] FootstepsManager m_FootstepsManager;
     [SerializeField] GameObject LeftHand, RightHand;
 
     [SerializeField] private float _MaxSwingMagnitudeAllowed = 10f;
@@ -45,13 +44,11 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         AvatarNetworkManager.OnMetaAvatarSetup += SetupCC;
-        GroupManager.OnUIUpdated += ChangesFromUI;
     }
 
     void OnDisable()
     {
         AvatarNetworkManager.OnMetaAvatarSetup -= SetupCC;
-        GroupManager.OnUIUpdated -= ChangesFromUI;
     }
 
     private void SetupCC()
@@ -136,22 +133,6 @@ public class PlayerController : MonoBehaviour
         m_NetworkPlayerInfo.RPC_Update_CycleDuration(PlayerCycleDuration);
         m_NetworkPlayerInfo.RPC_Update_Direction(m_currentdirection);
     }
-
-    public void UpdateLock()
-    {
-        if (LeftLocked && RightLocked)
-        {
-            isMoving = false;
-            SetArmswing(false);
-        }
-        else 
-        {
-            isMoving = true;
-            SetArmswing(true);
-        }
-        playerFeedbackManager.LockVisualState(LeftLocked,RightLocked);
-    }
-
     public void ShowMenu()
     {
         if (_Experimenter)
@@ -159,25 +140,11 @@ public class PlayerController : MonoBehaviour
             playerFeedbackManager.ShowMenu();
         }
     }
-
-    private void ChangesFromUI()
-    {
-        m_armswing.UpdateAmplifier(m_NetworkPlayerInfo.SpeedAmplifier);
-        playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
-        playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-        RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-
-        playerFeedbackManager.UpdateDistanceSliders(m_NetworkPlayerInfo.SAFEDIS, m_NetworkPlayerInfo.MAXDIST, m_NetworkPlayerInfo.CSTDIST, m_NetworkPlayerInfo.ADDDIST);
-    }
-
     private void CheckUpdatesfromUI()
     {
         m_armswing.UpdateAmplifier(m_NetworkPlayerInfo.SpeedAmplifier);
-        playerFeedbackManager.AuraEnabled = m_NetworkPlayerInfo.AuraState;
-        playerFeedbackManager.RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
         RhythmEnabled = m_NetworkPlayerInfo.RhythmState;
-
-        playerFeedbackManager.UpdateDistanceSliders(m_NetworkPlayerInfo.SAFEDIS, m_NetworkPlayerInfo.MAXDIST, m_NetworkPlayerInfo.CSTDIST, m_NetworkPlayerInfo.ADDDIST);
+        m_FootstepsManager.UpdateDistanceSliders(m_NetworkPlayerInfo.SAFEDIS, m_NetworkPlayerInfo.MAXDIST, m_NetworkPlayerInfo.CSTDIST, m_NetworkPlayerInfo.ADDDIST);
     }
     public PlayerMovementData GetPlayerMovementData()
     {
