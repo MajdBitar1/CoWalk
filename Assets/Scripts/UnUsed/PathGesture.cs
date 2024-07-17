@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using Unity.Mathematics;
 
-public class GestureRecognizer : MonoBehaviour
+public class PathGesture : MonoBehaviour
 {
     [Header("Provide These Objects")]
     

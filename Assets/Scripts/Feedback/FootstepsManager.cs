@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class FootstepsManager : MonoBehaviour
 {
-    [SerializeField] PlayerFeedbackManager m_PlayerFeedbackManager;
     [SerializeField] GroupManager m_GroupManager;
     [SerializeField] GameObject AuraObjectPrefab;
-    [SerializeField] GameObject RemoteAura, LocalAura; //CAN BE PRIVATE
+    // Aura Objects
+    [SerializeField] GameObject RemoteAura, LocalAura;
+    // Audio Player
+    [SerializeField] JukeBox RemoteFeedback;
 
     [Header("Constants To Tune")]
     [SerializeField] float MinimumSpeedToPlayFootsteps = 50f;
@@ -19,15 +21,12 @@ public class FootstepsManager : MonoBehaviour
 
     //Data Holders
     private NetworkPlayerInfo m_NetworkPlayerOneInfo, m_NetworkPlayerTwoInfo;
-
-    // Audio Player
-    private JukeBox RemoteFeedback;
-
     // Aura Values
     private float SafeSeparationZone = 5;
     private float MaxSeparationZone = 10;
     private float StartingValue = 9;
     private float AdditionalValue = 1;
+    private bool PlayersReady = false;
 
     private void OnEnable()
     {
@@ -38,15 +37,17 @@ public class FootstepsManager : MonoBehaviour
         GameManager.OnPlayerListUpdated -= SetupFeedback;
     }
 
-    void LateUpdate()
+    void Update()
     {
-        if ( !GameManager.PlayersReady ) return;
+        Debug.Log("[FootstepsMAN] Update");
+        if ( !PlayersReady ) return;
         if (GameManager.IsCameraMan)
         {
             CameraFeedback();
         }
         else
         {
+            Debug.Log("[FootstepsMAN] Before FootstepsFeedback Func");
             FootstepsFeedback(m_NetworkPlayerTwoInfo);
         }
 
@@ -55,27 +56,14 @@ public class FootstepsManager : MonoBehaviour
     {
         if (PlayerInfo.Speed > MinimumSpeedToPlayFootsteps)
         {
-            if(PlayerInfo.RhythmState)
+            // Base Condition Rhythm Based Footstps
+            _RemoteFootstepTime += Time.deltaTime;
+            if (_RemoteFootstepTime >= _RemoteFootstepCurrentPeriod)
             {
-                // Average Rhythm Based Footstps
-                _RemoteFootstepTime += Time.deltaTime;
-                if (_RemoteFootstepTime >= _RemoteFootstepCurrentPeriod)
-                {
-                    PlayRemoteFootstepSound(RemoteAura, PlayerInfo.AuraState, m_GroupManager.GetSeparationDistance()) ;
-                    _RemoteFootstepTime = 0;
-                    _RemoteFootstepCurrentPeriod = m_GroupManager.GetAverageCycleForBoth() / PlayFootstepDivideByThisRatio;
-                }
-            }
-            else
-            {
-                // Base Condition Rhythm Based Footstps
-                _RemoteFootstepTime += Time.deltaTime;
-                if (_RemoteFootstepTime >= _RemoteFootstepCurrentPeriod)
-                {
-                    PlayRemoteFootstepSound(RemoteAura, PlayerInfo.AuraState,  m_GroupManager.GetSeparationDistance() );
-                    _RemoteFootstepTime = 0;
-                    _RemoteFootstepCurrentPeriod = PlayerInfo.CycleDuration / PlayFootstepDivideByThisRatio;
-                }
+                Debug.Log("[FootFeed] Playing Footsteps");
+                PlayRemoteFootstepSound(RemoteAura, PlayerInfo.AuraState, PlayerInfo.RhythmState,  m_GroupManager.GetSeparationDistance() );
+                _RemoteFootstepTime = 0;
+                _RemoteFootstepCurrentPeriod = PlayerInfo.CycleDuration / PlayFootstepDivideByThisRatio;
             }
         }
     }
@@ -88,7 +76,7 @@ public class FootstepsManager : MonoBehaviour
             _LocalPlayerFootstepTime += Time.deltaTime;
             if (_LocalPlayerFootstepTime >= LocalFootstepCurrentPeriod)
             {
-                PlayRemoteFootstepSound(LocalAura ,m_NetworkPlayerOneInfo.AuraState,  m_GroupManager.GetSeparationDistance() );
+                PlayRemoteFootstepSound(LocalAura ,m_NetworkPlayerOneInfo.AuraState, m_NetworkPlayerOneInfo.RhythmState,  m_GroupManager.GetSeparationDistance() );
                 _LocalPlayerFootstepTime = 0;
                 LocalFootstepCurrentPeriod = m_NetworkPlayerOneInfo.CycleDuration / PlayFootstepDivideByThisRatio;
             }
@@ -99,7 +87,7 @@ public class FootstepsManager : MonoBehaviour
             _RemoteFootstepTime += Time.deltaTime;
                 if (_RemoteFootstepTime >= _RemoteFootstepCurrentPeriod)
                 {
-                    PlayRemoteFootstepSound(RemoteAura, m_NetworkPlayerTwoInfo.AuraState, m_GroupManager.GetSeparationDistance()) ;
+                    PlayRemoteFootstepSound(RemoteAura, m_NetworkPlayerTwoInfo.AuraState, m_NetworkPlayerTwoInfo.RhythmState,  m_GroupManager.GetSeparationDistance() ) ;
                     _RemoteFootstepTime = 0;
                     _RemoteFootstepCurrentPeriod = m_NetworkPlayerTwoInfo.CycleDuration / PlayFootstepDivideByThisRatio;
                 }
@@ -108,6 +96,8 @@ public class FootstepsManager : MonoBehaviour
     }
     private void SetupFeedback()
     {
+        m_NetworkPlayerOneInfo = GameManager.LocalPlayerObject.GetComponent<NetworkPlayerInfo>();
+        m_NetworkPlayerTwoInfo = GameManager.RemotePlayerObject.GetComponent<NetworkPlayerInfo>();
         if (GameManager.IsCameraMan)
         {
             RemoteFeedback = GameManager.PlayerTwo.GetComponentInChildren<JukeBox>();
@@ -122,6 +112,7 @@ public class FootstepsManager : MonoBehaviour
             if (RemoteAura == null)
                 RemoteAura = CreateAura(GameManager.RemotePlayerObject.gameObject.transform.FindChildRecursive("AllLOD"));
         }
+        PlayersReady = true;
     }
 
     private GameObject CreateAura(Transform transform)
@@ -133,26 +124,26 @@ public class FootstepsManager : MonoBehaviour
         return AuraObject;
     }
 
-    public void PlayRemoteFootstepSound(GameObject AuraObject,bool AuraState,float value)
+    public void PlayRemoteFootstepSound(GameObject AuraObject,bool AuraState, bool RhythmState,float value)
     {
         if(RemoteFeedback != null)
         {
-            RemoteFeedback.PlayFootstepSound();
+            if(RhythmState)
+            {
+                Debug.Log("[FootstepsMAN] Playing Footstep Sound");
+                RemoteFeedback.PlayFootstepSound();
+            }
             if(AuraState)
             {
-                m_PlayerFeedbackManager.AuraCodedState = AuraObject.GetComponent<AuraManager>().Aura(AuraState,value);
+                Debug.Log("[FootstepsMAN] Playing Footstep Visual");
+                m_GroupManager.AuraCodedValue = AuraObject.GetComponent<AuraManager>().Aura(AuraState,value);
             }
         }
         else
         {
-            Debug.Log("[FEEDBACKMAN] RemoteFeedback is null");
+            Debug.Log("[FootstepsMAN] RemoteFeedback is null");
             SetupFeedback();
         }
-    }
-    public void UpdatePlayersInfo(NetworkPlayerInfo playerOneData, NetworkPlayerInfo playerTwoData)
-    {
-        m_NetworkPlayerOneInfo = playerOneData;
-        m_NetworkPlayerTwoInfo = playerTwoData;
     }
 
     public void UpdateDistanceSliders(float Safe, float Max, float Cst, float Add)

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] GroupManager _groupman;
+    [SerializeField] NetworkChangesTransmitter m_NetworkTransmitter;
 
     [Header("UI Elements")]
     //[SerializeField] TextMeshProUGUI ASstateValue;
@@ -14,16 +14,37 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI PlayerTwoSpeed;    
     [SerializeField] TextMeshProUGUI PlayerTwoCycle;
     [SerializeField] Slider _SpeedAmp_Slider;
-    [SerializeField] Toggle AuraToggle, RhythmToggle;
+    [SerializeField] Toggle AuraToggle, RhythmToggle, _TracingStateToggle;
 
     private UIData _data;
     private bool StateAura = false;
     private bool StateRhythm = false;
+    private bool TracingState = false;
+    private bool SessionStarted = false;
 
 
+    void OnEnable()
+    {
+        GameManager.OnPlayerListUpdated += InitialTracing;
+    }
+    void OnDisable()
+    {
+        GameManager.OnPlayerListUpdated -= InitialTracing;
+    }
+
+    private void InitialTracing()
+    {
+        SessionStarted = true;
+        TracingState = true;
+        _TracingStateToggle.isOn = TracingState;
+    }
     void LateUpdate()
     {
-        _data = _groupman.PassUIData();
+        if (!SessionStarted)
+        {
+            return;
+        }
+        _data = m_NetworkTransmitter.PassUIData();
        // _data.ASstate = _armswing.isActiveAndEnabled ? 1 : 0;
         UpdateUIValues();
     }
@@ -59,10 +80,13 @@ public class UIManager : MonoBehaviour
     }
     private void UpdateButtonValues()
     {
-        _groupman.ButtonUpdatedValues(StateAura, StateRhythm, _SpeedAmp_Slider.value);
+        m_NetworkTransmitter.ButtonUpdatedValues(StateAura, StateRhythm, _SpeedAmp_Slider.value);
     }
-    // public void UpdateSliderValues()
-    // {
-    //     _groupman.SliderUpdatedValues();
-    // }
+
+    public void UpdateTracingState()
+    {
+        TracingState = !TracingState;
+        _TracingStateToggle.isOn = TracingState;
+        m_NetworkTransmitter.UpdateTracing(TracingState);
+    }
 }

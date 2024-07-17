@@ -1,15 +1,12 @@
 using UnityEngine;
 
 
-public class PlayerFeedbackManager : MonoBehaviour
+public class UIMenuManager : MonoBehaviour
 {
     [Header("Feedback Objects")]
-    [SerializeField] GameObject m_StatsMenuObj,m_TuningMenuObj,m_InteractionObj,LeftGestureLock, RightGestureLock;
-
-    [Header("Feedback States")]
-    public bool _ShowMenu = false;
-    public int AuraCodedState = 0; // -1 is BrokenAura, 0 is Aura NOT Broken but NOT enabled, 1 is Aura is Enabled BUT INVIEW, 2 is Aura is Enabled and Visualizing
-
+    [SerializeField] GameObject m_StatsMenuObj,m_TuningMenuObj,m_InteractionObj;
+    private bool _ShowMenu = false;
+    
     public void ShowMenu()
     {
         _ShowMenu = !_ShowMenu;
@@ -30,9 +27,5 @@ public class PlayerFeedbackManager : MonoBehaviour
             m_TuningMenuObj.SetActive(false);
             m_InteractionObj.SetActive(false);
         }
-    }
-    public int AuraStatus()
-    {
-        return AuraCodedState;
     }
 }

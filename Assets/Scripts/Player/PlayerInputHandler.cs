@@ -3,10 +3,7 @@ using UnityEngine;
 public class PlayerInputHandler : MonoBehaviour
 {
     private PlayerController m_playercontroller;
-    // [SerializeField] private InputActionReference m_LeftHandGrip;
-    // [SerializeField] private InputActionReference m_RightHandGrip;
-    // [SerializeField] private InputActionReference m_LeftHandTrigger;
-    // [SerializeField] private InputActionReference m_RightHandTrigger;
+    private NetworkChangesChecker networkChangesChecker;
     public int PrevState = 0;
     public int CurrentState = 0;
 
@@ -15,6 +12,7 @@ public class PlayerInputHandler : MonoBehaviour
     void Start()
     {
         m_playercontroller = GetComponent<PlayerController>();
+        networkChangesChecker = GetComponentInChildren<NetworkChangesChecker>();
     }
 
     // Update is called once per frame
@@ -28,10 +26,11 @@ public class PlayerInputHandler : MonoBehaviour
 
     private int CheckState()
     {
-        // if ( OVRInput.GetUp(OVRInput.Button.Three) ) // Lock Left
-        // {
-        //     return 1;
-        // }
+        if ( OVRInput.GetDown(OVRInput.Button.Three) && OVRInput.GetDown(OVRInput.Button.One) ) // Lock Left
+        {
+            // return 1;
+            GameManager.RestartVoice();
+        }
 
         // else if ( OVRInput.GetUp(OVRInput.Button.One) ) // Lock Right
         // {
@@ -68,7 +67,7 @@ public class PlayerInputHandler : MonoBehaviour
                 break;
             case 3:
                 //ShowMenu
-                m_playercontroller.ShowMenu();
+                networkChangesChecker.ShowMenu();
                 break;
             case 4:
                 m_playercontroller.TouchWalkingEnabled = true;

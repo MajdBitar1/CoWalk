@@ -171,7 +171,7 @@ MonoBehaviour:
     EnableAEC: 1
     EnableAGC: 1
     EnableNS: 1
-  stopRecordingWhenPaused: 0
+  stopRecordingWhenPaused: 1
   useOnAudioFilterRead: 0
   useMicrophoneTypeFallback: 1
   recordWhenJoined: 1

@@ -31,7 +31,7 @@ public class ObserverCameraFollow : MonoBehaviour
         Vector3 desiredPosition = Target.transform.position + _TargetLookDirection * amp + Offset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
         transform.position = smoothedPosition;
-         transform.LookAt(Target.transform);
+        transform.LookAt(Target.transform);
     }
 
     private void UpdateTarget()

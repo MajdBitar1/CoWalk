@@ -6,11 +6,10 @@ public class Armswing : MonoBehaviour
     /// 
     /// </summary>
     [Header("Player Obj Ref")]
-    private GameObject _Lefthand;
-    private GameObject _RightHand;
+    [SerializeField] GameObject _Lefthand;
+    [SerializeField] GameObject _RightHand;
     [SerializeField] GameObject _Head;
     [SerializeField] GameObject _Hips;
-    [SerializeField] PlayerController _playercontroller;
     private Vector3 prevPosLeft, prevPosRight, prevHipDirection;
     private Vector3 direction, HipDirection,HeadDirection;
     private Vector3 PlayerCurrentPosition, PlayerPreviousFramePosition;
@@ -23,12 +22,12 @@ public class Armswing : MonoBehaviour
     private float RightDistanceMoved = 0;
 
 
-    [Header("Constants")]
-    [SerializeField] float SpeedAmplifier = 50f;
+    [Header("Tuning Parameters")]
+    [SerializeField] float SpeedAmplifier = 100f;
     [SerializeField] float friction = 1f;
-    [SerializeField] float RequiredMovementThreshold = 0.002f;
-    [SerializeField] float MinimumPlayerSpeedThreshold = 0.02f;
-    [SerializeField] float MaximumPlayerSpeedThreshold = 20f;
+    [SerializeField] float RequiredMovementThreshold = 0f;
+    [SerializeField] float MinimumPlayerSpeedThreshold = 0.2f;
+    [SerializeField] float MaximumPlayerSpeedThreshold = 100f;
     [SerializeField] float RotationDetectionThreshold = 0.98f;
     [SerializeField] float DifferenceHeadandDirection = 0.6f;
 
@@ -40,8 +39,6 @@ public class Armswing : MonoBehaviour
 
     public void InitializeSwinger()
     {
-        _Lefthand = _playercontroller.GetLeftHand();
-        _RightHand = _playercontroller.GetRightHand();
         HipDirection = _Hips.gameObject.transform.forward.normalized;
         HeadDirection = _Head.gameObject.transform.forward.normalized;
         PlayerPreviousFramePosition = transform.localPosition;

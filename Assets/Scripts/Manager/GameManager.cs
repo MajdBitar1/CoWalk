@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Fusion;
+using Photon.Voice;
+using Photon.Voice.Unity;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ public class GameManager : Singleton<GameManager>
     public static bool PlayersReady = false;
     [SerializeField] GameObject NetworkManager;
     [SerializeField] GameObject CameraManPrefab;
+    [SerializeField] Recorder recorder;
     [Header("Enable Spectator Mode")]
     public bool ExposedCameraManBool = false;
     public static bool IsCameraMan = false;
@@ -31,7 +34,8 @@ public class GameManager : Singleton<GameManager>
             _CameraMan.transform.position = new Vector3(8.5f, 20, 0);
             _CameraMan.transform.rotation = Quaternion.Euler(45, -90, 0);
         }
-        Instantiate(NetworkManager);
+        var obj = Instantiate(NetworkManager);
+        recorder = obj.GetComponentInChildren<Recorder>();
         OVRPlugin.systemDisplayFrequency = 72.0f;
     }
     private void LateUpdate()
@@ -44,7 +48,7 @@ public class GameManager : Singleton<GameManager>
         PlayerOne = player;
         if (PlayerOne.GetComponentInChildren<PlayerController>() != null)
         {
-            PlayerOne.GetComponentInChildren<PlayerController>().SetExperimenter(true);
+            PlayerOne.GetComponentInChildren<NetworkChangesChecker>().SetExperimenter(true);
         }
         DefineLocalAndRemotePlayers();
     }
@@ -53,7 +57,7 @@ public class GameManager : Singleton<GameManager>
         PlayerTwo = player;
         if (PlayerTwo.GetComponentInChildren<PlayerController>() != null)
         {
-            PlayerTwo.GetComponentInChildren<PlayerController>().SetExperimenter(false);
+            PlayerTwo.GetComponentInChildren<NetworkChangesChecker>().SetExperimenter(false);
             if (IsCameraMan)
             {
                 _CameraMan.GetComponent<ObserverCameraFollow>().Target = PlayerTwo;
@@ -86,7 +90,6 @@ public class GameManager : Singleton<GameManager>
             OnPlayerListUpdated();
         }
     }
-
     public static void UpdatePlayerList()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -103,9 +106,16 @@ public class GameManager : Singleton<GameManager>
             }
         }
     }
-
     public static GameObject GetOrigin()
     {
         return origin;
+    }
+
+    public static void RestartVoice()
+    {
+        if (Instance.recorder != null)
+        {
+            Instance.recorder.RestartRecording();
+        }
     }
 }

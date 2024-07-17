@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SlidersManager : MonoBehaviour
 {
-    [SerializeField] GroupManager groupman;
+    [SerializeField] NetworkChangesTransmitter m_NetworkTransmitter;
     [SerializeField] Slider AdditionalDistanceSlider,CSTDistanceSlider,MAXDistanceSlider,SAFEDistanceSlider;
     [SerializeField] TextMeshProUGUI AdditionalDistanceText,CSTDistanceText,MAXDistanceText,SAFEDistanceText;
 
@@ -22,7 +22,7 @@ public class SlidersManager : MonoBehaviour
     }
     private void PassValues()
     {
-        groupman.UpdateDistanceSliders(SAFEDistanceSlider.value, MAXDistanceSlider.value, CSTDistanceSlider.value, AdditionalDistanceSlider.value);
+        m_NetworkTransmitter.UpdateDistanceSliders(SAFEDistanceSlider.value, MAXDistanceSlider.value, CSTDistanceSlider.value, AdditionalDistanceSlider.value);
     }
 
     public void SliderUpdate()

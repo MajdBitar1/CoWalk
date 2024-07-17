@@ -27,6 +27,9 @@ public class NetworkPlayerInfo : NetworkBehaviour
     [Networked]
     public float ADDDIST { get; set;}
 
+    [Networked]
+    public bool TracingState { get; set; }   
+
     private PlayerMovementData m_PlayerMoveData ;
 
     void Start()
@@ -98,6 +101,11 @@ public class NetworkPlayerInfo : NetworkBehaviour
     public void RPC_Update_ADDDIST(float value)
     {
         ADDDIST = value;
+    }
+    [Rpc(sources: RpcSources.All, targets: RpcTargets.All)]
+    public void RPC_Update_Tracing(bool state)
+    {
+        TracingState = state;
     }
 
 

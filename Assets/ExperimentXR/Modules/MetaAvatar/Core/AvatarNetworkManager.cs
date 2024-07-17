@@ -48,9 +48,9 @@ public class AvatarNetworkManager : NetworkBehaviour, IPlayerLeft
             }
         });
     }
-    public override void Spawned()
+    public void Start()
     {
-        base.Spawned();
+        //base.Spawned();
         // Create the avatar entity 
         GameObject avatarEntity = (base.HasStateAuthority) ? this.LocalEntityAvatarPrefab : this.RemoteEntityAvatarPrefab;
         avatarEntity = GameObject.Instantiate(avatarEntity, base.transform);
