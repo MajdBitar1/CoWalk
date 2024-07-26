@@ -26,10 +26,7 @@ public class DataCollection : MonoBehaviour
     }
     void OnApplicationQuit()
     {
-        if(_TracingState)
-        {
-            StopTracing();
-        }
+        StartCoroutine(EndTrackingRoutine());
     }
     public void InitialState()
     {
@@ -41,6 +38,7 @@ public class DataCollection : MonoBehaviour
     }
     public void ChangeTracingState(bool state)
     {
+        if (_TracingState == state) return;
         _TracingState = state;
         if(_TracingState)
         {
@@ -57,13 +55,13 @@ public class DataCollection : MonoBehaviour
     }
     private void StopTracing()
     {
-        StartCoroutine( EndTrackingRoutine() );
+        XPXRManager.Recorder.StopSession();
+        _TracingState = false;
     }
     IEnumerator EndTrackingRoutine()
     {
         yield return new WaitUntil(() => XPXRManager.Recorder.TransfersState() == 0);
         XPXRManager.Recorder.EndTracing();
-        _TracingState = false;
     }
 
     void LateUpdate()

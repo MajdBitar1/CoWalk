@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: XPXRConfig
   m_EditorClassIdentifier: 
   LocalStorageMode: 0
-  OnlineMode: 0
+  OnlineMode: 1
   BackUpStorageMode: 1
-  AuthorizationToken: 
-  WebSocketServer: 
+  AuthorizationToken: bWFqZDpjbzEyMzQ1Njc4OXdhbGs=
+  WebSocketServer: wss://xrxp.ls2n.fr/cowalk/ws
   RESTServer: https://...
   FileServer: 
-  ExperimentID: Majd
+  ExperimentID: 4f597ee2-4811-11ef-b6b0-0242ac180002
